@@ -1,49 +1,74 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { requestLogin, setToken } from '../services/requests';
+import Context from '../context/Context';
 
 function Login() {
-  console.log('teste se entrou no login');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [login, setLogin] = useState({
+    email: '',
+    password: '',
+  });
   const [invalidMessage, setInvalidMessage] = useState(true);
-  // const [btnDisabled, setButtonDisabled] = useState();
   const navigate = useNavigate();
+  const { setUser } = useContext(Context);
 
-  const verifyInput = (value) => {
+  const handleChange = ({ target: { value, name } }) => {
+    setLogin({ ...login, [name]: value });
+  };
 
+  const loginBtn = async (event) => {
+    event.preventDefault();
+    try {
+      const { token, role, name } = await requestLogin('/login', login);
+
+      setUser({ name, role });
+
+      setToken(token);
+
+      navigate(`/${role}`);
+    } catch (e) {
+      setInvalidMessage(false);
+    }
+  };
+
+  const isDisabled = () => {
+    const { email, password } = login;
+    const six = 6;
+    const regex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
+    return !(password.length >= six || regex.test(email));
   };
 
   return (
     <div>
       <form>
-        <label htmlFor="email-input">
+        <label htmlFor="email">
           Login
           <input
-            name="email-input"
-            value={ email }
+            name="email"
+            value={ login.email }
             type="email"
             placeholder="Digite um email"
             data-testid="common_login__input-email"
-            onChange={ ({ target: { value } }) => verifyInput(value) }
+            onChange={ handleChange }
           />
         </label>
-        <label htmlFor="password-input">
+        <label htmlFor="password">
           Senha
           <input
-            name="password-input"
-            value={ password }
+            name="password"
+            value={ login.password }
             type="password"
             placeholder="Digite o password"
             data-testid="common_login__input-password"
-            onChange={ ({ target: { value } }) => setPassword(value) }
+            onChange={ handleChange }
           />
         </label>
 
         <button
           data-testid="common_login__button-login"
           type="submit"
-          /* disabled={ btnDisabled } */
-          /* onClick={ () => {} } */
+          disabled={ isDisabled() }
+          onClick={ loginBtn }
         >
           Login
         </button>
@@ -51,7 +76,7 @@ function Login() {
         <button
           data-testid="common_login__button-register"
           type="submit"
-          onClick={ () => { navigate.push('/register'); } }
+          onClick={ () => { navigate('/register'); } }
         >
           Ainda não tenho conta
         </button>
@@ -67,5 +92,3 @@ function Login() {
 }
 
 export default Login;
-
-//             /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i

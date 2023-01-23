@@ -4,8 +4,8 @@ import Context from './Context';
 
 function Provider({ children }) {
   const [user, setUser] = useState({
-    email: '',
-    password: '',
+    name: '',
+    role: '',
   });
 
   // https://blog.agney.dev/useMemo-inside-context/

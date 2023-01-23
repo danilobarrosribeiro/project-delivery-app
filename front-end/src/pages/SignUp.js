@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { requestSignUp } from '../services/requests';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { requestSignUp, requestLogin, setToken } from '../services/requests';
 
 export default function SignUp() {
   const [newUser, setNewUser] = useState({
@@ -9,7 +9,7 @@ export default function SignUp() {
     password: '',
   });
   const [invalidMessage, setInvalidMessage] = useState(true);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleChange = ({ target: { value, name } }) => {
     setNewUser({ ...newUser, [name]: value });
@@ -20,13 +20,22 @@ export default function SignUp() {
     const six = 6;
     const twelve = 12;
     const regex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
-    return !(password.length >= six && regex.test(email) && name.length >= twelve);
+    return !(password.length >= six || regex.test(email) || name.length >= twelve);
   };
 
   const signBtn = async (event) => {
     event.preventDefault();
+
     try {
-      const { data } = await requestSignUp('/register', { ...newUser, role: 'Costumer' });
+      await requestSignUp('/register', { ...newUser, role: 'costumer' });
+
+      const { token, role, name } = await requestLogin('/login', user);
+
+      setUser({ name, role });
+
+      setToken(token);
+
+      navigate(`/${role}`);
     } catch (e) {
       setInvalidMessage(false);
     }
