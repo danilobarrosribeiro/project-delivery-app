@@ -3,32 +3,31 @@ import Context from '../context/Context';
 // import { Link } from 'react-router-dom';
 
 export default function Headers() {
-  const { user, role } = useContext(Context);
+  const { user } = useContext(Context);
   return (
     <div>
-      <h1>Headers</h1>
       {
-        role === 'costumer'
+        user.role === 'costumer'
           ? <div><p>PRODUTOS</p></div>
           : null
       }
+      {
+        user.role === 'seller'
+          ? <div><p>PEDIDOS</p></div>
+          : null
+      }
+      {
+        user.role === 'administrator'
+          ? <div><p>GERENCIAR USUÁRIOS</p></div>
+          : null
+      }
+      {
+        user.role === 'costumer'
+          ? <div><p>MEUS PEDIDOS</p></div>
+          : null
+      }
       <div>
-        <p>PRODUTOS</p>
-        {/* <Link to={} /> */}
-      </div>
-      <div>
-        <p>PEDIDOS</p>
-        {/* <Link to={} /> */}
-      </div>
-      <div>
-        <p>PRODUTOS</p>
-        {/* <Link to={} /> */}
-      </div>
-      <div>
-        <p>MEUS PEDIDOS</p>
-      </div>
-      <div>
-        <p>{ user }</p>
+        <p>{ user.name }</p>
       </div>
       <div>
         <p>Sair</p>
