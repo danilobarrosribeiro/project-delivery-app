@@ -1,3 +1,5 @@
+const db = require(".");
+
 module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define('Product', {
     id: {
@@ -7,12 +9,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: DataTypes.STRING(100),
     price: DataTypes.DECIMAL(4,2),
-    urlImage: DataTypes.STRING(200),
+    url_image: DataTypes.STRING(200),
   },
   {
+    sequelize: db,
     tableName: 'products',
     underScored: true,
-    timeStamps: false,
+    timestamps: false,
   });
 
   Product.associate = (models) => {
