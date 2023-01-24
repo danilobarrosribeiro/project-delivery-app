@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect /* useState */ } from 'react';
 import Headers from '../components/Headers';
 import DrinkCard from '../components/DrinkCard';
 // import { requestGetAll } from '../services/requests';
@@ -9,21 +9,19 @@ function Products() {
     { id: 2, name: 'Heineken 600ml', price: 7.50, url_image: 'http://localhost:3001/images/heineken_600ml.jpg' },
   ];
 
-  const [drinks, setDrinks] = useState([]);
+  // const [drinks, setDrinks] = useState([]);
   // const allDrinks = await requestGetAll('/products');
   const getAll = async () => drinksMock;
-  /* useEffect(() => {
+  useEffect(() => {
     setDrinks(getAll());
-  }, []); */
-  console.log(drinksMock);
+  }, []);
   return (
     <div>
       <Headers />
       <main>
-        {/* {
+        {
           drinksMock.map((drink) => <DrinkCard key={ drink.id } drink={ drink } />)
-        } */}
-        <DrinkCard drink={ drinksMock[0] } />
+        }
       </main>
     </div>
   );
