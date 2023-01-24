@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
     },
     name: DataTypes.STRING(100),
-    price: DataTypes.DECIMAL,
+    price: DataTypes.DECIMAL(4,2),
     urlImage: DataTypes.STRING(200),
   },
   {
@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
     timeStamps: false,
   });
 
-  // Product.associate = (models) => {
-  //   Product.hasMany(models.SaleProduct, { foreignKey: 'product_id', as: 'sale_product' });
-  // }
+  Product.associate = (models) => {
+    Product.hasMany(models.SaleProduct, { foreignKey: 'product_id', as: 'sale_product' });
+  }
   return Product;
 };

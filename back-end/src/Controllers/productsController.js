@@ -1,4 +1,4 @@
-const productsService = require('../services/productsService');
+const productsService = require('../Services/productsService');
 
 const getAll = async (_req, res) => {
   try {
@@ -11,4 +11,3 @@ const getAll = async (_req, res) => {
 };
 
 module.exports = { getAll };
-
