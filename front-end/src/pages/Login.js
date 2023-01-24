@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { requestLogin, setToken } from '../services/requests';
+import { requestGet, setToken } from '../services/requests';
 import Context from '../context/Context';
+import '../css/login.css';
 
 function Login() {
   const [login, setLogin] = useState({
@@ -10,7 +11,7 @@ function Login() {
   });
   const [invalidMessage, setInvalidMessage] = useState(true);
   const navigate = useNavigate();
-  const { setUser } = useContext(Context);
+  const user = useContext(Context);
 
   const handleChange = ({ target: { value, name } }) => {
     setLogin({ ...login, [name]: value });
@@ -19,9 +20,9 @@ function Login() {
   const loginBtn = async (event) => {
     event.preventDefault();
     try {
-      const { token, role, name } = await requestLogin('/login', login);
+      const { token, role, name } = await requestGet('/login', login);
 
-      setUser({ name, role });
+      user.setUser({ name, role });
 
       setToken(token);
 
@@ -34,16 +35,17 @@ function Login() {
   const isDisabled = () => {
     const { email, password } = login;
     const six = 6;
-    const regex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
-    return !(password.length >= six || regex.test(email));
+    const regex = /^\w+([/.-]?\w+)@\w+([/.-]?\w+)(.\w{2,3})+$/;
+    return !(password.length >= six && regex.test(email));
   };
 
   return (
-    <div>
-      <form>
-        <label htmlFor="email">
+    <div className="container">
+      <form className="container-login ">
+        <label htmlFor="email" className="container-input-login">
           Login
           <input
+            className="input-login"
             name="email"
             value={ login.email }
             type="email"
@@ -52,9 +54,10 @@ function Login() {
             onChange={ handleChange }
           />
         </label>
-        <label htmlFor="password">
+        <label htmlFor="password" className="container-input-login">
           Senha
           <input
+            className="input-login"
             name="password"
             value={ login.password }
             type="password"
@@ -63,23 +66,26 @@ function Login() {
             onChange={ handleChange }
           />
         </label>
+        <div className="container-btn">
+          <button
+            className="btn-login"
+            data-testid="common_login__button-login"
+            type="submit"
+            disabled={ isDisabled() }
+            onClick={ loginBtn }
+          >
+            Login
+          </button>
 
-        <button
-          data-testid="common_login__button-login"
-          type="submit"
-          disabled={ isDisabled() }
-          onClick={ loginBtn }
-        >
-          Login
-        </button>
-
-        <button
-          data-testid="common_login__button-register"
-          type="submit"
-          onClick={ () => { navigate('/register'); } }
-        >
-          Ainda não tenho conta
-        </button>
+          <button
+            className="btn-login btn-register"
+            data-testid="common_login__button-register"
+            type="submit"
+            onClick={ () => { navigate('/register'); } }
+          >
+            Ainda não tenho conta
+          </button>
+        </div>
         <p
           hidden={ invalidMessage }
           data-testid="common_login__element-invalid-email"

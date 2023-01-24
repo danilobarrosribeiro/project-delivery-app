@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { requestSignUp, requestLogin, setToken } from '../services/requests';
+import { requestPost, requestGet, setToken } from '../services/requests';
 
 export default function SignUp() {
   const [newUser, setNewUser] = useState({
@@ -15,21 +15,29 @@ export default function SignUp() {
     setNewUser({ ...newUser, [name]: value });
   };
 
+  // const isDisabled = () => {
+  //   const { name, email, password } = newUser;
+  //   const six = 6;
+  //   const twelve = 12;
+  //   const regex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
+  //   return !(password.length >= six || regex.test(email) || name.length >= twelve);
+  // };
+
   const isDisabled = () => {
     const { name, email, password } = newUser;
     const six = 6;
     const twelve = 12;
-    const regex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
-    return !(password.length >= six || regex.test(email) || name.length >= twelve);
+    const regex = /^\w+([/.-]?\w+)@\w+([/.-]?\w+)(.\w{2,3})+$/;
+    return !(password.length >= six && regex.test(email) && name.length >= twelve);
   };
 
   const signBtn = async (event) => {
     event.preventDefault();
 
     try {
-      await requestSignUp('/register', { ...newUser, role: 'costumer' });
+      await requestPost('/register', { ...newUser, role: 'costumer' });
 
-      const { token, role, name } = await requestLogin('/login', user);
+      const { token, role, name } = await requestGet('/login', user);
 
       setUser({ name, role });
 
@@ -42,14 +50,15 @@ export default function SignUp() {
   };
 
   return (
-    <div>
-      <h1>
-        Cadastro
-      </h1>
-      <form>
+    <div className="container">
+      <form className="container-login container-register">
+        <h1>
+          Cadastro
+        </h1>
 
-        <label htmlFor="name">
+        <label htmlFor="name" className="container-input-login">
           <input
+            className="input-login"
             data-testid="common_register__input-name"
             type="text"
             name="name"
@@ -59,8 +68,9 @@ export default function SignUp() {
           />
         </label>
 
-        <label htmlFor="email">
+        <label htmlFor="email" className="container-input-login">
           <input
+            className="input-login"
             data-testid="common_register__input-email"
             type="email"
             name="email"
@@ -70,8 +80,9 @@ export default function SignUp() {
           />
         </label>
 
-        <label htmlFor="password">
+        <label htmlFor="password" className="container-input-login">
           <input
+            className="input-login"
             data-testid="common_register__input-password"
             type="password"
             name="password"
@@ -81,21 +92,22 @@ export default function SignUp() {
           />
         </label>
 
+        <button
+          className="btn-login"
+          data-testid="common_register__button-register"
+          type="button"
+          disabled={ isDisabled() }
+          onClick={ signBtn }
+        >
+          Cadastrar
+        </button>
+        <p
+          hidden={ invalidMessage }
+          data-testid="common_register__element-invalid_register"
+        >
+          Email ou Senha já cadastrado!!
+        </p>
       </form>
-      <button
-        data-testid="common_register__button-register"
-        type="button"
-        disabled={ isDisabled() }
-        onClick={ signBtn }
-      >
-        Cadastrar
-      </button>
-      <p
-        hidden={ invalidMessage }
-        data-testid="common_register__element-invalid_register"
-      >
-        Email ou Senha já cadastrado!!
-      </p>
     </div>
   );
 }

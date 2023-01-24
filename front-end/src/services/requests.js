@@ -8,12 +8,12 @@ export const setToken = (token) => {
   api.defaults.headers.common.Authorization = token;
 };
 
-export const requestLogin = async (endpoint, body) => {
+export const requestGet = async (endpoint, body) => {
   const { data } = await api.get(endpoint, body);
   return data;
 };
 
-export const requestSignUp = async (endpoint, body) => {
+export const requestPost = async (endpoint, body) => {
   const { data } = await api.post(endpoint, body);
   return data;
 };
