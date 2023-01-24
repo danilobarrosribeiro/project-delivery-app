@@ -5,10 +5,15 @@ import Context from '../context/Context';
 export default function Headers() {
   const { user } = useContext(Context);
   return (
-    <div>
+    <header>
       {
         user.role === 'costumer'
-          ? <div><p>PRODUTOS</p></div>
+          ? (
+            <nav>
+              <div><p>PRODUTOS</p></div>
+              <div><p>MEUS PEDIDOS</p></div>
+            </nav>
+          )
           : null
       }
       {
@@ -32,7 +37,7 @@ export default function Headers() {
       <div>
         <p>Sair</p>
       </div>
-    </div>
+    </header>
   );
 }
 

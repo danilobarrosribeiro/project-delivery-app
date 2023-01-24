@@ -13,7 +13,6 @@ import SignUp from './pages/SignUp';
 // </div>
 
 function App() {
-  console.log('teste se entrou no APP');
   return (
     <BrowserRouter>
       <Routes>
