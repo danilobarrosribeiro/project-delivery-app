@@ -15,19 +15,11 @@ export default function SignUp() {
     setNewUser({ ...newUser, [name]: value });
   };
 
-  // const isDisabled = () => {
-  //   const { name, email, password } = newUser;
-  //   const six = 6;
-  //   const twelve = 12;
-  //   const regex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
-  //   return !(password.length >= six || regex.test(email) || name.length >= twelve);
-  // };
-
   const isDisabled = () => {
     const { name, email, password } = newUser;
     const six = 6;
     const twelve = 12;
-    const regex = /^\w+([/.-]?\w+)@\w+([/.-]?\w+)(.\w{2,3})+$/;
+    const regex = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;
     return !(password.length >= six && regex.test(email) && name.length >= twelve);
   };
 

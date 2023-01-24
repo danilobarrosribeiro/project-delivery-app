@@ -13,6 +13,11 @@ export const requestGet = async (endpoint, body) => {
   return data;
 };
 
+export const requestGetAll = async (endpoint) => {
+  const { data } = await api.get(endpoint);
+  return data;
+};
+
 export const requestPost = async (endpoint, body) => {
   const { data } = await api.post(endpoint, body);
   return data;

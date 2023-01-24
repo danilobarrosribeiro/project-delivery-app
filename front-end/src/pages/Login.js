@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { requestGet, setToken } from '../services/requests';
 import Context from '../context/Context';
-// import '../css/login.css';
+import '../css/login.css';
 
 function Login() {
   const [login, setLogin] = useState({
@@ -11,7 +11,7 @@ function Login() {
   });
   const [invalidMessage, setInvalidMessage] = useState(true);
   const navigate = useNavigate();
-  const user = useContext(Context);
+  const { setUser } = useContext(Context);
 
   const handleChange = ({ target: { value, name } }) => {
     setLogin({ ...login, [name]: value });
@@ -22,7 +22,7 @@ function Login() {
     try {
       const { token, role, name } = await requestGet('/login', login);
 
-      user.setUser({ name, role });
+      setUser({ name, role });
 
       setToken(token);
 
@@ -35,7 +35,7 @@ function Login() {
   const isDisabled = () => {
     const { email, password } = login;
     const six = 6;
-    const regex = /^\w+([/.-]?\w+)@\w+([/.-]?\w+)(.\w{2,3})+$/;
+    const regex = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;
     return !(password.length >= six && regex.test(email));
   };
 

@@ -7,12 +7,13 @@ function Provider({ children }) {
     name: '',
     role: '',
   });
+  const [drinkCart, setDrinkCart] = useState([]);
 
   // https://blog.agney.dev/useMemo-inside-context/
 
   const value = React.useMemo(() => ({
-    user, setUser,
-  }), [user]);
+    user, setUser, drinkCart, setDrinkCart,
+  }), [user, drinkCart]);
 
   return (
     <Context.Provider value={ value }>
