@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { requestPost, requestGet, setToken } from '../services/requests';
+import { requestPost, setToken } from '../services/requests';
 import Context from '../context/Context';
 
 export default function SignUp() {
@@ -29,16 +29,14 @@ export default function SignUp() {
     event.preventDefault();
 
     try {
-      await requestPost('/register', { ...newUser, role: 'customer' });
-
-      const { token, role, name } = await requestGet('/login', user);
+      const { token, role, name } = await requestPost('/register', newUser);
 
       saveToLocal('user', { name, role });
       saveToLocal('cartDrinks', []);
 
       setToken(token);
 
-      navigate(`/${role}`);
+      navigate(`/${role}/products`);
     } catch (e) {
       setInvalidMessage(false);
     }
