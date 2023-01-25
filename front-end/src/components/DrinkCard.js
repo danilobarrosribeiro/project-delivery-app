@@ -4,26 +4,26 @@ import Context from '../context/Context';
 
 export default function DrinkCard({ drink }) {
   const [quantity, setQuantity] = useState(0);
-  const { saveToLocal } = useContext(Context);
+  const { saveToLocal, setDrinkCart } = useContext(Context);
 
   const { name, price, id, url_image: image } = drink;
 
+  const handleChange = ({ target: { value } }) => {
+    setQuantity(value);
+  };
+
   const addDrink = () => {
     const cartLocal = JSON.parse(localStorage.getItem('cartDrinks'));
-    const drinkC = cartLocal.find((e) => e.id === id);
     const drinks = cartLocal.filter((e) => e.id !== id && e.id !== undefined);
-    console.log(drinkC);
-    if (!drinkC) {
-      saveToLocal('cartDrinks', [...cartLocal, {
+    if (cartLocal[0] === undefined && quantity > 0) {
+      saveToLocal('cartDrinks', [{
         url_image: image,
         name,
         price,
         id,
         quantity,
       }]);
-    } else if (quantity <= 0) {
-      saveToLocal('cartDrinks', [drinks]);
-    } else {
+    } else if (quantity > 0) {
       saveToLocal('cartDrinks', [...drinks, {
         url_image: image,
         name,
@@ -31,7 +31,11 @@ export default function DrinkCard({ drink }) {
         id,
         quantity,
       }]);
+    } else if (quantity <= 0 && cartLocal[0] !== undefined) {
+      saveToLocal('cartDrinks', [drinks]);
     }
+    const updatedCart = JSON.parse(localStorage.getItem('cartDrinks'));
+    setDrinkCart(updatedCart);
   };
 
   const validateNegativeQuantity = () => {
@@ -45,8 +49,10 @@ export default function DrinkCard({ drink }) {
   }, [quantity]);
 
   return (
-    <div data-testid={ `customer_products__element-card-price-${id}` }>
-      <h2>{price}</h2>
+    <div>
+      <h2 data-testid={ `customer_products__element-card-price-${id}` }>
+        {price.replace('.', ',')}
+      </h2>
       <img
         src={ image }
         alt={ name }
@@ -60,7 +66,12 @@ export default function DrinkCard({ drink }) {
       >
         -
       </button>
-      <p data-testid={ `customer_products__input-card-quantity-${id}` }>{quantity}</p>
+      <input
+        value={ quantity }
+        onChange={ handleChange }
+        type="number"
+        data-testid={ `customer_products__input-card-quantity-${id}` }
+      />
       <button
         data-testid={ `customer_products__button-card-add-item-${id}` }
         type="button"
@@ -76,7 +87,7 @@ DrinkCard.propTypes = {
   drink: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
-    price: PropTypes.number,
+    price: PropTypes.string,
     url_image: PropTypes.string,
   }).isRequired,
 };

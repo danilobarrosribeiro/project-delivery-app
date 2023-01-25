@@ -87,5 +87,3 @@ export default function Headers() {
     </header>
   );
 }
-
-// no button SAIR falta a função de logout

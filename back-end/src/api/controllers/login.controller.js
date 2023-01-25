@@ -8,7 +8,6 @@ const validateLogin = async (req, res) => {
 
 const createLogin = async (req, res) => {
   const userInfo = req.body;
-  console.log(userInfo);
   const { type, message } = await loginService.createLogin(userInfo);
   res.status(type).json(message);
 };

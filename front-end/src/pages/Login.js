@@ -18,16 +18,14 @@ function Login() {
     setLogin({ ...login, [name]: value });
   };
 
-  // const saveToLocal = (user) => localStorage.setItem('user', JSON.stringify(user));
-
   const loginBtn = async (event) => {
     event.preventDefault();
     try {
-      const { token, role, name } = await requestPost('/login', login);
+      const { token, role, name, email } = await requestPost('/login', login);
 
       setToken(token);
 
-      saveToLocal('user', { name, role, token });
+      saveToLocal('user', { name, email, role, token });
       saveToLocal('cartDrinks', []);
       return navigate(`/${role}/products`);
     } catch (e) {

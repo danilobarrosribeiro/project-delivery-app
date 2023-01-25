@@ -11,7 +11,7 @@ const createToken = (payload) => {
 
 const validateToken = (token) => {
   try {
-    const { data } = jwt.verify(token, 'SECRET');
+    const data = jwt.verify(token, 'SECRET');
     return { validated: true, data };
   } catch (error) {
     return { validated: false };

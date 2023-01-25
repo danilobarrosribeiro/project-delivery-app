@@ -29,9 +29,9 @@ export default function SignUp() {
     event.preventDefault();
 
     try {
-      const { token, role, name } = await requestPost('/register', newUser);
+      const { token, role, name, email } = await requestPost('/register', newUser);
 
-      saveToLocal('user', { name, role });
+      saveToLocal('user', { name, email, role, token });
       saveToLocal('cartDrinks', []);
 
       setToken(token);
