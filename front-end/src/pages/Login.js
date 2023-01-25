@@ -12,21 +12,23 @@ function Login() {
   });
   const [invalidMessage, setInvalidMessage] = useState(true);
   const navigate = useNavigate();
-  const { setUser } = useContext(Context);
+  const { saveToLocal } = useContext(Context);
 
   const handleChange = ({ target: { value, name } }) => {
     setLogin({ ...login, [name]: value });
   };
+
+  // const saveToLocal = (user) => localStorage.setItem('user', JSON.stringify(user));
 
   const loginBtn = async (event) => {
     event.preventDefault();
     try {
       const { token, role, name } = await requestPost('/login', login);
 
-      setUser({ name, role });
-
       setToken(token);
 
+      saveToLocal('user', { name, role, token });
+      saveToLocal('cartDrinks', []);
       return navigate(`/${role}/products`);
     } catch (e) {
       setInvalidMessage(false);

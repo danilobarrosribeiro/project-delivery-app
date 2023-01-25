@@ -1,33 +1,42 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import Context from '../context/Context';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Headers() {
-  const { user } = useContext(Context);
+  const [user, setUser] = useState('');
+  const navigate = useNavigate();
+
+  const removeToLocal = () => {
+    localStorage.clear();
+    navigate('/');
+  };
+
+  useEffect(() => {
+    const localUser = JSON.parse(localStorage.getItem('user'));
+    setUser(localUser);
+  }, []);
+
   return (
     <header>
       {
-        user.role === 'costumer'
+        user.role === 'customer'
           ? (
             <nav>
-              <Link
-                to="/costumer/products"
+
+              <button
+                type="button"
+                data-testid="customer_products__element-navbar-link-products"
+                onClick={ () => navigate('/customer/products') }
               >
-                <div
-                  data-testid="customer_products__element-navbar-link-products"
-                >
-                  <p>PRODUTOS</p>
-                </div>
-              </Link>
-              <Link
-                to="/costumer/orders"
+                PRODUTOS
+              </button>
+
+              <button
+                type="button"
+                onClick={ () => navigate('/customer/orders') }
+                data-testid="customer_products__element-navbar-link-orders"
               >
-                <div
-                  data-testid="customer_products__element-navbar-link-orders"
-                >
-                  <p>MEUS PEDIDOS</p>
-                </div>
-              </Link>
+                MEUS PEDIDOS
+              </button>
             </nav>
           )
           : null
@@ -35,24 +44,27 @@ export default function Headers() {
       {
         user.role === 'seller'
           ? (
-            <Link to="/seller/orders">
-              <div
-                data-testid="customer_products__element-navbar-link-orders"
-              >
-                <p>PEDIDOS</p>
-              </div>
-            </Link>
+
+            <button
+              type="button"
+              data-testid="customer_products__element-navbar-link-orders"
+              onClick={ () => navigate('/seller/orders') }
+            >
+              PEDIDOS
+            </button>
           )
           : null
       }
       {
         user.role === 'administrator'
           ? (
-            <div
+            <button
+              type="button"
               data-testid="customer_products__element-navbar-link-orders"
+              onClick={ () => navigate('/admin/users') }
             >
-              <p>GERENCIAR USUÁRIOS</p>
-            </div>
+              GERENCIAR USUÁRIOS
+            </button>
           )
           : null
       }
@@ -67,6 +79,7 @@ export default function Headers() {
         <button
           type="button"
           data-testid="customer_products__element-navbar-link-logout"
+          onClick={ () => removeToLocal() }
         >
           Sair
         </button>

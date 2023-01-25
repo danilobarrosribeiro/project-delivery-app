@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { requestPost, requestGet, setToken } from '../services/requests';
+import Context from '../context/Context';
 
 export default function SignUp() {
   const [newUser, setNewUser] = useState({
@@ -10,6 +11,7 @@ export default function SignUp() {
   });
   const [invalidMessage, setInvalidMessage] = useState(true);
   const navigate = useNavigate();
+  const { saveToLocal } = useContext(Context);
 
   const handleChange = ({ target: { value, name } }) => {
     setNewUser({ ...newUser, [name]: value });
@@ -27,11 +29,12 @@ export default function SignUp() {
     event.preventDefault();
 
     try {
-      await requestPost('/register', { ...newUser, role: 'costumer' });
+      await requestPost('/register', { ...newUser, role: 'customer' });
 
       const { token, role, name } = await requestGet('/login', user);
 
-      setUser({ name, role });
+      saveToLocal('user', { name, role });
+      saveToLocal('cartDrinks', []);
 
       setToken(token);
 

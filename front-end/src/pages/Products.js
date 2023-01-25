@@ -16,6 +16,7 @@ function Products() {
   useEffect(() => {
     setDrinks(drinksMock);
   }, []);
+
   return (
     <div>
       <Headers />
@@ -24,6 +25,13 @@ function Products() {
           drinks.map((drink) => <DrinkCard key={ drink.id } drink={ drink } />)
         }
       </main>
+      <button
+        type="button"
+        data-testid="customer_products__button-cart"
+      >
+        Ver carrinho
+
+      </button>
     </div>
   );
 }

@@ -4,26 +4,28 @@ import Context from '../context/Context';
 
 export default function DrinkCard({ drink }) {
   const [quantity, setQuantity] = useState(0);
-  const { setDrinkCart, drinkCart } = useContext(Context);
+  const { saveToLocal } = useContext(Context);
 
-  const { name, price, id } = drink;
+  const { name, price, id, url_image: image } = drink;
 
   const addDrink = () => {
-    const drinkC = drinkCart.filter((e) => e.id === id);
-    const drinks = drinkCart.filter((e) => e.id !== id);
+    const cartLocal = JSON.parse(localStorage.getItem('cartDrinks'));
+    const drinkC = cartLocal.find((e) => e.id === id);
+    const drinks = cartLocal.filter((e) => e.id !== id && e.id !== undefined);
+    console.log(drinkC);
     if (!drinkC) {
-      setDrinkCart([...drinkCart, {
-        url_image: drinkCart.url_image,
+      saveToLocal('cartDrinks', [...cartLocal, {
+        url_image: image,
         name,
         price,
         id,
         quantity,
       }]);
-    } else if (quantity < 0) {
-      setDrinkCart([drinks]);
+    } else if (quantity <= 0) {
+      saveToLocal('cartDrinks', [drinks]);
     } else {
-      setDrinkCart([...drinks, {
-        url_image: drinkCart.url_image,
+      saveToLocal('cartDrinks', [...drinks, {
+        url_image: image,
         name,
         price,
         id,
@@ -46,7 +48,7 @@ export default function DrinkCard({ drink }) {
     <div data-testid={ `customer_products__element-card-price-${id}` }>
       <h2>{price}</h2>
       <img
-        src={ drink.url_image }
+        src={ image }
         alt={ name }
         data-testid={ `customer_products__img-card-bg-image-${id}` }
       />
@@ -65,13 +67,6 @@ export default function DrinkCard({ drink }) {
         onClick={ () => setQuantity(quantity + 1) }
       >
         +
-      </button>
-      <button
-        type="button"
-        data-testid="customer_products__button-cart "
-      >
-        Ver carrinho
-
       </button>
     </div>
   );
