@@ -16,22 +16,6 @@ const validateLogin = async (email, password) => {
   } return { type: 404, message: { message: 'Incorrect email or password' } };
 };
 
-const createLogin = async (userInfo) => {
-  const { email, name } = userInfo;
-  const userWithSameEmail = Boolean(await models.User.findOne({ where: { email } }));
-  const userWithSameName = Boolean(await models.User.findOne({ where: { name } }));
-  if (userWithSameEmail || userWithSameName) {
-    return { type: 409, message: { message: 'Name or email already exists' } };
-  }
-  await models.User.create({ ...userInfo, role: 'customer' });
-  const { password: _, ...payload } = userInfo;
-  payload.role = 'customer';
-  const token = jwtUtils.createToken(payload);
-  payload.token = token;
-  return { type: 201, message: payload };
-};
-
 module.exports = {
   validateLogin,
-  createLogin,
 };

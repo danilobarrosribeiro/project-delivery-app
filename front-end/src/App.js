@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-// import Provider from './context/Provider';
+import Provider from './context/Provider';
 import './App.css';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import Products from './pages/Products';
 // import rockGlass from './images/rockGlass.svg';
 // <div className="App">
 //   <span className="logo">TRYBE</span>
@@ -15,13 +16,14 @@ import SignUp from './pages/SignUp';
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route exact path="/" element={ <Navigate to="/login" /> } />
-        {/* <Route exact path="/" redirect="/login" /> */}
-        <Route path="/login" element={ <Login /> } />
-        <Route path="/register" element={ <SignUp /> } />
-        {/* <Redirect to="/login" /> */}
-      </Routes>
+      <Provider>
+        <Routes>
+          <Route exact path="/" element={ <Navigate to="/login" /> } />
+          <Route path="/login" element={ <Login /> } />
+          <Route path="/register" element={ <SignUp /> } />
+          <Route path="/customer/products" element={ <Products /> } />
+        </Routes>
+      </Provider>
     </BrowserRouter>
   );
 }

@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { requestGet, setToken } from '../services/requests';
+import { requestPost, setToken } from '../services/requests';
 import Context from '../context/Context';
-// import '../css/login.css';
+import '../css/login.css';
+import logo from '../css/images/logo.jpg';
 
 function Login() {
   const [login, setLogin] = useState({
@@ -11,22 +12,24 @@ function Login() {
   });
   const [invalidMessage, setInvalidMessage] = useState(true);
   const navigate = useNavigate();
-  const user = useContext(Context);
+  const { saveToLocal } = useContext(Context);
 
   const handleChange = ({ target: { value, name } }) => {
     setLogin({ ...login, [name]: value });
   };
 
+  // const saveToLocal = (user) => localStorage.setItem('user', JSON.stringify(user));
+
   const loginBtn = async (event) => {
     event.preventDefault();
     try {
-      const { token, role, name } = await requestGet('/login', login);
-
-      user.setUser({ name, role });
+      const { token, role, name } = await requestPost('/login', login);
 
       setToken(token);
 
-      navigate(`/${role}`);
+      saveToLocal('user', { name, role, token });
+      saveToLocal('cartDrinks', []);
+      return navigate(`/${role}/products`);
     } catch (e) {
       setInvalidMessage(false);
     }
@@ -35,12 +38,17 @@ function Login() {
   const isDisabled = () => {
     const { email, password } = login;
     const six = 6;
-    const regex = /^\w+([/.-]?\w+)@\w+([/.-]?\w+)(.\w{2,3})+$/;
+    const regex = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;
     return !(password.length >= six && regex.test(email));
   };
 
   return (
     <div className="container">
+      <img
+        className="img-logo"
+        src={ logo }
+        alt="Logo FastRefresh"
+      />
       <form className="container-login ">
         <label htmlFor="email" className="container-input-login">
           Login
