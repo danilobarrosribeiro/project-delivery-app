@@ -1,3 +1,5 @@
+const db = require(".");
+
 module.exports = (sequelize, DataTypes) => {
   const Sale = sequelize.define('Sale', {
     id: {
@@ -5,16 +7,17 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       type: DataTypes.INTEGER,
     },
-    userId: DataTypes.INTEGER,
-    sellerId: DataTypes.INTEGER,
-    totalPrice: DataTypes.DECIMAL,
-    deliveryAddress: DataTypes.STRING(100),
-    deliveryNumber: DataTypes.STRING(50),
-    SaleDate: DataTypes.DATE,
+    user_id: DataTypes.INTEGER,
+    seller_id: DataTypes.INTEGER,
+    total_price: DataTypes.DECIMAL,
+    delivery_address: DataTypes.STRING(100),
+    delivery_number: DataTypes.STRING(50),
+    sale_date: DataTypes.DATE,
     status: DataTypes.STRING(50),
   },
   {
-    timeStamps: false,
+    sequelize: db,
+    timestamps: false,
     underScored: true,
     tableName: 'sales'
   });
