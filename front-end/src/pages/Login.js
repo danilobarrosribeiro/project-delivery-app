@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { requestPost, setToken } from '../services/requests';
 import Context from '../context/Context';
 import '../css/login.css';
+import logo from '../css/images/logo.jpg';
 
 function Login() {
   const [login, setLogin] = useState({
@@ -41,6 +42,11 @@ function Login() {
 
   return (
     <div className="container">
+      <img
+        className="img-logo"
+        src={ logo }
+        alt="Logo FastRefresh"
+      />
       <form className="container-login ">
         <label htmlFor="email" className="container-input-login">
           Login
