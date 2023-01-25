@@ -39,6 +39,7 @@ const { Sale } = require('../../database/models');
     return { type: 201, message: { message: '' },
   };
   };
+  
 module.exports = {
   getAll,
   getById,
