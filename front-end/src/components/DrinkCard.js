@@ -1,36 +1,36 @@
 import PropTypes from 'prop-types';
-import React, { /* useEffect, useContext */ useState } from 'react';
-// import Context from '../context/Context';
+import React, { useEffect, useContext, useState } from 'react';
+import Context from '../context/Context';
 
 export default function DrinkCard({ drink }) {
   const [quantity, setQuantity] = useState(0);
-  // const { setDrinkCart, drinkCart } = useContext(Context);
+  const { setDrinkCart, drinkCart } = useContext(Context);
 
   const { name, price, id } = drink;
 
-  // const addDrink = () => {
-  //   const drinkC = drinkCart.filter((e) => e.id === id);
-  //   const drinks = drinkCart.filter((e) => e.id !== id);
-  //   if (!drinkC) {
-  //     setDrinkCart([...drinkCart, {
-  //       url_image: drinkCart.url_image,
-  //       name,
-  //       price,
-  //       id,
-  //       quantity,
-  //     }]);
-  //   } else if (quantity < 0) {
-  //     setDrinkCart([drinks]);
-  //   } else {
-  //     setDrinkCart([...drinks, {
-  //       url_image: drinkCart.url_image,
-  //       name,
-  //       price,
-  //       id,
-  //       quantity,
-  //     }]);
-  //   }
-  // };
+  const addDrink = () => {
+    const drinkC = drinkCart.filter((e) => e.id === id);
+    const drinks = drinkCart.filter((e) => e.id !== id);
+    if (!drinkC) {
+      setDrinkCart([...drinkCart, {
+        url_image: drinkCart.url_image,
+        name,
+        price,
+        id,
+        quantity,
+      }]);
+    } else if (quantity < 0) {
+      setDrinkCart([drinks]);
+    } else {
+      setDrinkCart([...drinks, {
+        url_image: drinkCart.url_image,
+        name,
+        price,
+        id,
+        quantity,
+      }]);
+    }
+  };
 
   const validateNegativeQuantity = () => {
     if (quantity > 0) {
@@ -38,9 +38,9 @@ export default function DrinkCard({ drink }) {
     }
   };
 
-  // useEffect(() => {
-  //   addDrink();
-  // }, [quantity]);
+  useEffect(() => {
+    addDrink();
+  }, [quantity]);
 
   return (
     <div data-testid={ `customer_products__element-card-price-${id}` }>

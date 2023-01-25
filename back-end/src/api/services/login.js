@@ -6,7 +6,7 @@ const jwtUtils = require('../utils/jwt.utils');
 const validateLogin = async(email, password) => {
   const user = await models.User.findOne({ where: { email }});
   if(!user) {
-    return { type: 401, message: { message: 'Incorrect email or password' } };
+    return { type: 404, message: { message: 'Incorrect email or password' } };
   }
   const providedPass = md5(password);
   const dbPass = user.password;
@@ -14,7 +14,7 @@ const validateLogin = async(email, password) => {
     const { password: _, ...payload } = user.dataValues;
     const token = jwtUtils.createToken(payload);
     return { type: 200, message: { ...payload, token } }
-  } return { type: 401, message: { message: 'Incorrect email or password' } };
+  } return { type: 404, message: { message: 'Incorrect email or password' } };
 };
 
 module.exports = {

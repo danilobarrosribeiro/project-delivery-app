@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { requestGet, setToken } from '../services/requests';
+import { requestPost, setToken } from '../services/requests';
 import Context from '../context/Context';
 import '../css/login.css';
 
@@ -20,13 +20,13 @@ function Login() {
   const loginBtn = async (event) => {
     event.preventDefault();
     try {
-      const { token, role, name } = await requestGet('/login', login);
+      const { token, role, name } = await requestPost('/login', login);
 
       setUser({ name, role });
 
       setToken(token);
 
-      navigate(`/${role}`);
+      return navigate(`/${role}/products`);
     } catch (e) {
       setInvalidMessage(false);
     }
