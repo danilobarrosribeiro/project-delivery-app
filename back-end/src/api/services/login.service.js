@@ -23,12 +23,13 @@ const createLogin = async (userInfo) => {
   if (userWithSameEmail || userWithSameName) {
     return { type: 409, message: { message: 'Name or email already exists' } };
   }
-  await models.User.create({ ...userInfo, role: 'customer' });
-  const { password: _, ...payload } = userInfo;
-  payload.role = 'customer';
-  const token = jwtUtils.createToken(payload);
-  payload.token = token;
-  return { type: 201, message: payload };
+  userInfo.password = md5 (userInfo.password);
+  userInfo.role = 'customer';
+  await models.User.create(userInfo);
+  delete userInfo.password;
+  const token = jwtUtils.createToken(userInfo);
+  userInfo.token = token;
+  return { type: 201, message: userInfo };
 };
 
 module.exports = {
