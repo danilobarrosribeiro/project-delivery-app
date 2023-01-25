@@ -29,7 +29,8 @@ export default function SignUp() {
     event.preventDefault();
 
     try {
-      await requestPost('/register', { ...newUser, role: 'customer' });
+      console.log(newUser);
+      await requestPost('/register', { ...newUser });
 
       const { token, role, name } = await requestGet('/login', user);
 
