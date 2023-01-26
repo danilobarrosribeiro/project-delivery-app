@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
-
-const { JWT_SECRET } = process.env;
+const jwtKey = require("fs")
+  .readFileSync("./back-end/jwt.evaluation.key", { encoding: "utf-8" });
 
 const createToken = (payload) => {
-  const token = jwt.sign({ payload }, JWT_SECRET, {
+  const token = jwt.sign({ payload }, jwtKey, {
     expiresIn: '1d',
     algorithm: 'HS256',
   });
@@ -13,7 +13,7 @@ const createToken = (payload) => {
 
 const validateToken = (token) => {
   try {
-    const data = jwt.verify(token, JWT_SECRET);
+    const data = jwt.verify(token, jwtKey);
     return { validated: true, data };
   } catch (error) {
     return { validated: false };
