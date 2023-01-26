@@ -54,10 +54,21 @@ const { Sale, SaleProduct } = require('../../database/models');
     await createProductSale(id, products);
   };
 
+  const getSalesByUserId = async (userId) => {
+    const result = await Sale.findAll({
+      where: {
+        userId,
+      },
+    });
+
+    return { type: 200, message: result };
+  };
+
 module.exports = {
   getAll,
   getById,
   createSale,
+  getSalesByUserId,
 };
 
 // https://stackoverflow.com/questions/64390713/asynchronous-verification-within-the-map-function/
