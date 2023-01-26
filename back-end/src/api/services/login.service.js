@@ -16,14 +16,14 @@ const validateLogin = async (email, password) => {
   } return { type: 404, message: { message: 'Incorrect email or password' } };
 };
 
-const createLogin = async (userInfo) => {
+const createUser = async (userInfo, role) => {
   const { email, name } = userInfo;
   const userWithSameEmail = Boolean(await models.User.findOne({ where: { email } }));
   const userWithSameName = Boolean(await models.User.findOne({ where: { name } }));
   if (userWithSameEmail || userWithSameName) {
     return { type: 409, message: { message: 'Name or email already exists' } };
   }
-  const newUser = { ...userInfo, role: 'customer', password: md5(userInfo.password) };
+  const newUser = { ...userInfo, role, password: md5(userInfo.password) };
   await models.User.create(newUser);
   const { password: _, ...payload } = newUser;
   const token = jwtUtils.createToken(payload);
@@ -33,5 +33,5 @@ const createLogin = async (userInfo) => {
 
 module.exports = {
   validateLogin,
-  createLogin,
+  createUser,
 };
