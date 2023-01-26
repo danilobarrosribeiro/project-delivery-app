@@ -6,14 +6,13 @@ const validateLogin = async (req, res) => {
   res.status(type).json(message);
 };
 
-const createLogin = async (req, res) => {
+const createCustomerLogin = async (req, res) => {
   const userInfo = req.body;
-  console.log(userInfo);
-  const { type, message } = await loginService.createLogin(userInfo);
+  const { type, message } = await loginService.createUser(userInfo, 'customer');
   res.status(type).json(message);
 };
 
 module.exports = {
   validateLogin,
-  createLogin,
+  createCustomerLogin,
 };
