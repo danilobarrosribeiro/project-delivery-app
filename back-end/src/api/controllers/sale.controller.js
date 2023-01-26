@@ -18,6 +18,7 @@ const createSale = async (req, res) => {
   if (!validateToken) {
     res.status(401).json({ message: 'Token não autorizado' });
   } else {
+    delete req.body.payload;
   const order = req.body;
 
   const { type, message } = await saleService.createSale(order);
@@ -27,7 +28,8 @@ const createSale = async (req, res) => {
 };
 
 const getSalesByUserId = async (req, res) => {
-  const { userId } = req.body;
+  const userId = req.body.payload.id;
+  console.log(userId);
   const { type, message } = await saleService.getSalesByUserId(userId);
 
   res.status(type).json(message);

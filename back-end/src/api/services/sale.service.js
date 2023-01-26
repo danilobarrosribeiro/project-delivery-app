@@ -19,39 +19,32 @@ const { Sale, SaleProduct } = require('../../database/models');
   };
 
   const createProductSale = async (id, products) => {
-    await Promise.all(
-      products.map(async (obj) => {
+    Promise.all(
+      products.map(async ({ productId, quantity }) => {
         await SaleProduct.create({
           saleId: id,
-          productId: obj.productId,
-          quantity: obj.quantity,
+          productId,
+          quantity,
         });
-        return null;
       }),
     );
-
-    return { type: 200, message: '' };
   };
   
   const createSale = async (order) => {
-    const {
+    const { userId, sellerId, totalPrice, deliveryAddress, deliveryNumber, products } = order;
+    const newDate = new Date();
+
+    const data = await Sale.create({
       userId,
       sellerId,
       totalPrice,
       deliveryAddress,
       deliveryNumber,
-      products,
-   } = order;
-    const { id } = await Sale.create({
-      userId,
-      sellerId,
-      totalPrice,
-      deliveryAddress,
-      deliveryNumber,
-      saleDate: new Date(),
+      saleDate: newDate,
       status: 'pendente',
     });
-    await createProductSale(id, products);
+    await createProductSale(data.id, products);
+    return { type: 200, message: data };
   };
 
   const getSalesByUserId = async (userId) => {
@@ -60,6 +53,7 @@ const { Sale, SaleProduct } = require('../../database/models');
         userId,
       },
     });
+    console.log(result);
 
     return { type: 200, message: result };
   };
