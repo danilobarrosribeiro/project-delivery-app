@@ -11,8 +11,12 @@ function Products() {
   const [totalCart, setTotalCart] = useState(0);
 
   const getAll = async () => {
-    const allDrinks = await requestGet('/customer/products');
-    setDrinks(allDrinks);
+    try {
+      const allDrinks = await requestGet('/customer/products');
+      setDrinks(allDrinks);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getTotalCart = () => {
