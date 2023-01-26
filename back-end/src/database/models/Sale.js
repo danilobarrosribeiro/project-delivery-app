@@ -7,18 +7,18 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       type: DataTypes.INTEGER,
     },
-    user_id: DataTypes.INTEGER,
-    seller_id: DataTypes.INTEGER,
-    total_price: DataTypes.DECIMAL,
-    delivery_address: DataTypes.STRING(100),
-    delivery_number: DataTypes.STRING(50),
-    sale_date: DataTypes.DATE,
+    userId: DataTypes.INTEGER,
+    sellerId: DataTypes.INTEGER,
+    totalPrice: DataTypes.DECIMAL,
+    deliveryAddress: DataTypes.STRING(100),
+    deliveryNumber: DataTypes.STRING(50),
+    saleDate: DataTypes.DATE,
     status: DataTypes.STRING(50),
   },
   {
     sequelize: db,
     timestamps: false,
-    underScored: true,
+    underscored: true,
     tableName: 'sales'
   });
 

@@ -1,4 +1,4 @@
-const { Sale } = require('../../database/models');
+const { Sale, SaleProduct } = require('../../database/models');
 
   const getAll = async () => {
     const orders = await Sale.findAll();
@@ -17,6 +17,21 @@ const { Sale } = require('../../database/models');
 
     return { type: 200, message: order };
   };
+
+  const createProductSale = async (id, products) => {
+    await Promise.all(
+      products.map(async (obj) => {
+        await SaleProduct.create({
+          saleId: id,
+          productId: obj.productId,
+          quantity: obj.quantity,
+        });
+        return null;
+      }),
+    );
+
+    return { type: 200, message: '' };
+  };
   
   const createSale = async (order) => {
     const {
@@ -25,8 +40,9 @@ const { Sale } = require('../../database/models');
       totalPrice,
       deliveryAddress,
       deliveryNumber,
+      products,
    } = order;
-    await Sale.create({
+    const { id } = await Sale.create({
       userId,
       sellerId,
       totalPrice,
@@ -35,13 +51,13 @@ const { Sale } = require('../../database/models');
       saleDate: new Date(),
       status: 'pendente',
     });
+    await createProductSale(id, products);
+  };
 
-    return { type: 201, message: { message: '' },
-  };
-  };
-  
 module.exports = {
   getAll,
   getById,
   createSale,
 };
+
+// https://stackoverflow.com/questions/64390713/asynchronous-verification-within-the-map-function/
