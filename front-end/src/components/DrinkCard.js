@@ -4,7 +4,7 @@ import Context from '../context/Context';
 
 export default function DrinkCard({ drink }) {
   const [quantity, setQuantity] = useState(0);
-  const { saveToLocal, setDrinkCart } = useContext(Context);
+  const { saveToLocal, setDrinkCart, getToLocal } = useContext(Context);
 
   const { name, price, id, url_image: image } = drink;
 
@@ -13,28 +13,23 @@ export default function DrinkCard({ drink }) {
   };
 
   const addDrink = () => {
-    const cartLocal = JSON.parse(localStorage.getItem('cartDrinks'));
+    const cartLocal = getToLocal('cartDrinks');
     const drinks = cartLocal.filter((e) => e.id !== id && e.id !== undefined);
-    if (cartLocal[0] === undefined && quantity > 0) {
-      saveToLocal('cartDrinks', [{
-        url_image: image,
-        name,
-        price,
-        id,
-        quantity,
-      }]);
-    } else if (quantity > 0) {
-      saveToLocal('cartDrinks', [...drinks, {
-        url_image: image,
-        name,
-        price,
-        id,
-        quantity,
-      }]);
-    } else if (quantity <= 0 && cartLocal[0] !== undefined) {
-      saveToLocal('cartDrinks', [drinks]);
+    const product = {
+      id,
+      name,
+      price,
+      quantity,
+    };
+    if (!cartLocal && quantity > 0) {
+      saveToLocal('cartDrinks', [product]);
+    } if (quantity <= 0) {
+      saveToLocal('cartDrinks', drinks);
+    } else {
+      drinks.push(product);
+      saveToLocal('cartDrinks', drinks);
     }
-    const updatedCart = JSON.parse(localStorage.getItem('cartDrinks'));
+    const updatedCart = getToLocal('cartDrinks');
     setDrinkCart(updatedCart);
   };
 
@@ -97,3 +92,25 @@ DrinkCard.propTypes = {
     url_image: PropTypes.string,
   }).isRequired,
 };
+
+/* if (cartLocal[0] === undefined && quantity > 0) {
+  saveToLocal('cartDrinks', [{
+    url_image: image,
+    name,
+    price,
+    id,
+    quantity,
+  }]);
+} else if (quantity > 0) {
+  saveToLocal('cartDrinks', [...drinks, {
+    url_image: image,
+    name,
+    price,
+    id,
+    quantity,
+  }]);
+} else if (quantity <= 0 && cartLocal[0] !== undefined) {
+  saveToLocal('cartDrinks', [drinks]);
+}
+const updatedCart = JSON.parse(localStorage.getItem('cartDrinks'));
+    setDrinkCart(updatedCart); */

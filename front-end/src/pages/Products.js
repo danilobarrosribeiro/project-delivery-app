@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Headers from '../components/Headers';
 import DrinkCard from '../components/DrinkCard';
-import { requestGet } from '../services/requests';
+import { requestGet, setToken } from '../services/requests';
 import Context from '../context/Context';
 import '../css/products.css';
 
@@ -9,9 +10,12 @@ function Products() {
   const [drinks, setDrinks] = useState([]);
   const { drinkCart, setDrinkCart, getToLocal } = useContext(Context);
   const [totalCart, setTotalCart] = useState(0);
+  const navigate = useNavigate();
 
   const getAll = async () => {
     try {
+      const { token } = getToLocal('user');
+      setToken(token);
       const allDrinks = await requestGet('/customer/products');
       setDrinks(allDrinks);
     } catch (error) {
@@ -26,7 +30,10 @@ function Products() {
         total += Number(drink.quantity * drink.price);
         return total;
       });
-      return setTotalCart((total).toFixed(2));
+
+      setTotalCart(total.toFixed(2).toString().replace('.', ','));
+    } else {
+      setTotalCart('0,00');
     }
   };
 
@@ -51,10 +58,14 @@ function Products() {
       <button
         className="btn-cart"
         type="button"
+        disabled={ totalCart === '0,00' }
         data-testid="customer_products__button-cart"
+        onClick={ () => navigate('/customer/checkout') }
       >
-        {` Ver carrinho R$${totalCart}`}
-
+        Ver carrinho: R$
+        <p data-testid="customer_products__checkout-bottom-value">
+          {totalCart}
+        </p>
       </button>
     </div>
   );
