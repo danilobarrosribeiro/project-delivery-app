@@ -40,7 +40,7 @@ export default function DrinkCard({ drink }) {
 
   const validateNegativeQuantity = () => {
     if (quantity > 0) {
-      setQuantity(quantity - 1);
+      setQuantity(Number(quantity) - 1);
     }
   };
 
@@ -49,36 +49,42 @@ export default function DrinkCard({ drink }) {
   }, [quantity]);
 
   return (
-    <div>
+    <div className="container-card-products ">
       <h2 data-testid={ `customer_products__element-card-price-${id}` }>
-        {price.replace('.', ',')}
+        {`R$${price.replace('.', ',')}`}
       </h2>
       <img
+        className={ name === 'Skol Lata 250ml' ? 'img-skol' : 'img-card-products' }
         src={ image }
         alt={ name }
         data-testid={ `customer_products__img-card-bg-image-${id}` }
       />
       <h3 data-testid={ `customer_products__element-card-title-${id}` }>{name}</h3>
-      <button
-        data-testid={ `customer_products__button-card-rm-item-${id}` }
-        type="button"
-        onClick={ () => validateNegativeQuantity() }
-      >
-        -
-      </button>
-      <input
-        value={ quantity }
-        onChange={ handleChange }
-        type="number"
-        data-testid={ `customer_products__input-card-quantity-${id}` }
-      />
-      <button
-        data-testid={ `customer_products__button-card-add-item-${id}` }
-        type="button"
-        onClick={ () => setQuantity(quantity + 1) }
-      >
-        +
-      </button>
+      <div>
+        <button
+          className="btn-card"
+          data-testid={ `customer_products__button-card-rm-item-${id}` }
+          type="button"
+          onClick={ () => validateNegativeQuantity() }
+        >
+          -
+        </button>
+        <input
+          className="input-quantity"
+          value={ quantity }
+          onChange={ handleChange }
+          type="number"
+          data-testid={ `customer_products__input-card-quantity-${id}` }
+        />
+        <button
+          className="btn-card"
+          data-testid={ `customer_products__button-card-add-item-${id}` }
+          type="button"
+          onClick={ () => setQuantity(Number(quantity) + 1) }
+        >
+          +
+        </button>
+      </div>
     </div>
   );
 }
