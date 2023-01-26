@@ -1,35 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Headers from '../components/Headers';
 import DrinkCard from '../components/DrinkCard';
-// import { requestGet } from '../services/requests';
+import { requestGet } from '../services/requests';
+import Context from '../context/Context';
+import '../css/products.css';
 
 function Products() {
-  const drinksMock = [
-    { id: 1, name: 'Skol Lata 250ml', price: 2.20, url_image: 'http://localhost:3001/images/skol_lata_350ml.jpg' },
-    { id: 2, name: 'Heineken 600ml', price: 7.50, url_image: 'http://localhost:3001/images/heineken_600ml.jpg' },
-  ];
-
   const [drinks, setDrinks] = useState([]);
-  // const getAll = async () => {
-  //   const allDrinks = await requestGet('/products'); return allDrinks;
-  // };
+  const { drinkCart, setDrinkCart, getToLocal } = useContext(Context);
+  const [totalCart, setTotalCart] = useState(0);
+
+  const getAll = async () => {
+    const allDrinks = await requestGet('/customer/products');
+    setDrinks(allDrinks);
+  };
+
+  const getTotalCart = () => {
+    if (drinkCart.length > 0) {
+      let total = 0;
+      drinkCart.forEach((drink) => {
+        total += Number(drink.quantity * drink.price);
+        return total;
+      });
+      return setTotalCart((total).toFixed(2));
+    }
+  };
+
   useEffect(() => {
-    setDrinks(drinksMock);
+    const localCart = getToLocal('cartDrinks');
+    setDrinkCart(localCart);
+    getAll();
   }, []);
+
+  useEffect(() => {
+    getTotalCart();
+  }, [drinkCart]);
 
   return (
     <div>
       <Headers />
-      <main>
+      <main className="container-products">
         {
           drinks.map((drink) => <DrinkCard key={ drink.id } drink={ drink } />)
         }
       </main>
       <button
+        className="btn-cart"
         type="button"
         data-testid="customer_products__button-cart"
       >
-        Ver carrinho
+        {` Ver carrinho R$${totalCart}`}
 
       </button>
     </div>

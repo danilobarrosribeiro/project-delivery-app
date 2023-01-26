@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../css/header.css';
+import logo from '../css/images/logo.jpg';
 
 export default function Headers() {
   const [user, setUser] = useState('');
@@ -16,13 +18,14 @@ export default function Headers() {
   }, []);
 
   return (
-    <header>
+    <header className="container-header">
       {
         user.role === 'customer'
           ? (
-            <nav>
+            <nav className="nav-header">
 
               <button
+                className="btn-header"
                 type="button"
                 data-testid="customer_products__element-navbar-link-products"
                 onClick={ () => navigate('/customer/products') }
@@ -31,6 +34,7 @@ export default function Headers() {
               </button>
 
               <button
+                className="btn-header"
                 type="button"
                 onClick={ () => navigate('/customer/orders') }
                 data-testid="customer_products__element-navbar-link-orders"
@@ -46,6 +50,7 @@ export default function Headers() {
           ? (
 
             <button
+              className="btn-header"
               type="button"
               data-testid="customer_products__element-navbar-link-orders"
               onClick={ () => navigate('/seller/orders') }
@@ -59,6 +64,7 @@ export default function Headers() {
         user.role === 'administrator'
           ? (
             <button
+              className="btn-header"
               type="button"
               data-testid="customer_products__element-navbar-link-orders"
               onClick={ () => navigate('/admin/users') }
@@ -68,15 +74,21 @@ export default function Headers() {
           )
           : null
       }
-      <div>
+
+      <img
+        className="img-logo-header"
+        src={ logo }
+        alt="Logo FastRefresh"
+      />
+      <div className="nav-header">
         <p
+          className="name-header"
           data-testid="customer_products__element-navbar-user-full-name"
         >
           { user.name }
         </p>
-      </div>
-      <div>
         <button
+          className="btn-header"
           type="button"
           data-testid="customer_products__element-navbar-link-logout"
           onClick={ () => removeToLocal() }
@@ -87,5 +99,3 @@ export default function Headers() {
     </header>
   );
 }
-
-// no button SAIR falta a função de logout
