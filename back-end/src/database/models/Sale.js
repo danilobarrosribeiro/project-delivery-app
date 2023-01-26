@@ -1,3 +1,5 @@
+const db = require(".");
+
 module.exports = (sequelize, DataTypes) => {
   const Sale = sequelize.define('Sale', {
     id: {
@@ -10,12 +12,13 @@ module.exports = (sequelize, DataTypes) => {
     totalPrice: DataTypes.DECIMAL,
     deliveryAddress: DataTypes.STRING(100),
     deliveryNumber: DataTypes.STRING(50),
-    SaleDate: DataTypes.DATE,
+    saleDate: DataTypes.DATE,
     status: DataTypes.STRING(50),
   },
   {
-    timeStamps: false,
-    underScored: true,
+    sequelize: db,
+    timestamps: false,
+    underscored: true,
     tableName: 'sales'
   });
 

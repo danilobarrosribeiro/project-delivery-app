@@ -17,7 +17,7 @@ const validateToken = (token) => {
     return { validated: true, data };
   } catch (error) {
     return { validated: false };
-  }    
+  }
 };
 
 module.exports = { 
