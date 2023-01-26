@@ -1,3 +1,4 @@
+// Resolvido o JWT
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const key = require('fs').readFileSync(path.resolve(__dirname, '../../../jwt.evaluation.key'));
