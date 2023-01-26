@@ -12,7 +12,6 @@ const validateLogin = async (email, password) => {
   if (providedPass === dbPass) {
     const { password: _, ...payload } = user.dataValues;
     const token = jwtUtils.createToken(payload);
-    console.log(payload);
     return { type: 200, message: { ...payload, token } };
   } return { type: 404, message: { message: 'Incorrect email or password' } };
 };

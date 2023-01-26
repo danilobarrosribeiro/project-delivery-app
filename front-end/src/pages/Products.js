@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Headers from '../components/Headers';
+import Headers from '../components/Header';
 import DrinkCard from '../components/DrinkCard';
 import { requestGet, setToken } from '../services/requests';
 import Context from '../context/Context';
@@ -8,7 +8,13 @@ import '../css/products.css';
 
 function Products() {
   const [drinks, setDrinks] = useState([]);
-  const { drinkCart, setDrinkCart, getToLocal } = useContext(Context);
+  const {
+    drinkCart,
+    setDrinkCart,
+    getToLocal,
+    saveToLocal,
+  } = useContext(Context);
+
   const [totalCart, setTotalCart] = useState(0);
   const navigate = useNavigate();
 
@@ -24,16 +30,18 @@ function Products() {
   };
 
   const getTotalCart = () => {
+    let total = 0;
     if (drinkCart.length > 0) {
-      let total = 0;
       drinkCart.forEach((drink) => {
         total += Number(drink.quantity * drink.price);
         return total;
       });
-
-      setTotalCart(total.toFixed(2).toString().replace('.', ','));
+      const newTotal = total.toFixed(2).toString().replace('.', ',');
+      setTotalCart(newTotal);
+      saveToLocal('totalPrice', newTotal);
     } else {
       setTotalCart('0,00');
+      saveToLocal('totalPrice', '0,00');
     }
   };
 

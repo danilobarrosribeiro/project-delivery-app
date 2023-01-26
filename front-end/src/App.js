@@ -5,6 +5,8 @@ import './App.css';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Products from './pages/Products';
+import Checkout from './pages/Checkout';
+
 // import rockGlass from './images/rockGlass.svg';
 // <div className="App">
 //   <span className="logo">TRYBE</span>
@@ -22,7 +24,7 @@ function App() {
           <Route path="/login" element={ <Login /> } />
           <Route path="/register" element={ <SignUp /> } />
           <Route path="/customer/products" element={ <Products /> } />
-          <Route path="/customer/checkout" element={ () => {} } />
+          <Route path="/customer/checkout" element={ <Checkout /> } />
         </Routes>
       </Provider>
     </BrowserRouter>
