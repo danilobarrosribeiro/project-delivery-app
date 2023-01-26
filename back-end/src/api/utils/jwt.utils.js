@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const jwtKey = require("fs")
-  .readFileSync("./back-end/jwt.evaluation.key", { encoding: "utf-8" });
+  .readFileSync("../../../jwt.evaluation.key", { encoding: "utf-8" });
 
 const createToken = (payload) => {
   const token = jwt.sign({ payload }, jwtKey, {
