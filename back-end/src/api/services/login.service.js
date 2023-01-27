@@ -8,7 +8,7 @@ const validateLogin = async (email, password) => {
     return { type: 404, message: { message: 'Incorrect email or password' } };
   }
   const providedPass = md5(password);
-  const dbPass = user.password;
+  const dbPass = user.dataValues.password;
   if (providedPass === dbPass) {
     const { password: _, ...payload } = user.dataValues;
     const token = jwtUtils.createToken(payload);
