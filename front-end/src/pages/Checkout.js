@@ -1,32 +1,66 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Context from '../context/Context';
 import Header from '../components/Header';
-import { requestGet, setToken } from '../services/requests';
+import { requestGet, setToken, requestPost } from '../services/requests';
 import CheckoutTable from '../components/CheckoutTable';
 
 export default function Checkout() {
-  const { drinkCart, getToLocal } = useContext(Context);
-  const [sellers, setSellers] = useState([
-    { name: 'Fulano Seller', id: 1 },
-    { name: 'Siclina Seller', id: 2 },
-  ]);
-  const [dataUser, setDataUser] = useState();
+  const navigate = useNavigate();
+  const { getToLocal } = useContext(Context);
+  const [data, setData] = useState({
+    sellerName: '',
+    sellerId: '',
+    deliveryAddress: '',
+    deliveryNumber: '',
+    totalPrice: '',
+    products: [],
+  });
+  const [sellers, setSellers] = useState([]);
 
-  // const handleChange = ({ target: { value } }) => {
-  //   setQuantity(value);
-  // };
+  const getSellers = async () => {
+    try {
+      const list = await requestGet('/sellers');
+      setData({ ...data, sellerName: list[0].name });
+      setSellers(list);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  // const getSellers = async () => {
-  //   const list = await requestGet('/sellers');
-  //   setSellers(list);
-  // };
+  const handleChange = ({ target: { value, name } }) => {
+    if (name === 'deliveryNumber') {
+      setData({ ...data, [name]: Number(value) });
+    } else {
+      setData({ ...data, [name]: value });
+    }
+  };
 
   useEffect(() => {
-    // getSellers();
-    const { id, token } = getToLocal('user');
-    setDataUser({ id, token });
+    getSellers();
+    const { token } = getToLocal('user');
     setToken(token);
   }, []);
+
+  const sendDataToDB = async () => {
+    const totalPrice = getToLocal('totalPrice');
+    const products = getToLocal('cartDrinks')
+      .map(({ id, quantity }) => ({ productId: id, quantity: Number(quantity) }));
+    const seller = sellers.find((e) => e.name === data.sellerName);
+    console.log({
+      ...data, sellerId: seller.id, totalPrice, products });
+    try {
+      const { id } = await requestPost('/customer/orders', {
+        ...data,
+        sellerId: seller.id,
+        totalPrice: Number(totalPrice.replace(',', '.')),
+        products });
+      navigate(`/customer/orders/${id}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <main className="container-checkout">
       <Header />
@@ -36,44 +70,50 @@ export default function Checkout() {
       </section>
       <section className="container-section-checkout">
         <h1>Detalhes e Endereço para Entrega</h1>
-        <div className="line-checkout address-container">
+        <div className="line-checkout delivery-container">
 
-          <label htmlFor="seller-input">
+          <label htmlFor="sellerName">
             P. Vendedora Responsável:
             <select
               data-testid="customer_checkout__select-seller"
-              name="seller-input"
+              onChange={ handleChange }
+              name="sellerName"
             >
               { sellers.map((seller) => (
                 <option
                   key={ seller.id }
                   id={ seller.id }
                 >
-                  {seller.name}
+                  { seller.name }
                 </option>))}
 
             </select>
           </label>
-          <label htmlFor="address-input">
+          <label htmlFor="deliveryAddress">
             Endereço
             <input
               type="text"
-              name="seller-input"
+              name="deliveryAddress"
               placeholder="Digite seu endereço"
-              data-testid="customer_checkout__input-address"
+              data-testid="customer_checkout__input-delivery"
+              value={ data.deliveryAddress }
+              onChange={ handleChange }
             />
           </label>
-          <label htmlFor="number-input">
+          <label htmlFor="deliveryNumber">
             Número
             <input
               type="number"
-              name="number-input"
-              data-testid="customer_checkout__input-address-number"
+              name="deliveryNumber"
+              data-testid="customer_checkout__input-delivery-number"
+              value={ data.deliveryNumber }
+              onChange={ handleChange }
             />
           </label>
           <button
             type="button"
             data-testid="customer_checkout__button-submit-order"
+            onClick={ () => sendDataToDB() }
           >
             Finalizar pedido
           </button>

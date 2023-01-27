@@ -7,12 +7,11 @@ const getById = async (req, res) => {
 };
 
 const createSale = async (req, res) => {
-  delete req.body.payload;
-  const order = req.body;
-
-  const { type, message } = await saleService.createSale(order);
-
-  res.status(type).json(message);
+  const userId = req.body.payload.id;
+  const { payload: _, ...order } = req.body;
+  
+  const { type, message } = await saleService.createSale(order, userId);
+   res.status(type).json(message);
   };
 
 const getSalesByUserId = async (req, res) => {

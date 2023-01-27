@@ -21,8 +21,8 @@ const { Sale, SaleProduct } = require('../../database/models');
     );
   };
   
-  const createSale = async (order) => {
-    const { userId, sellerId, totalPrice, deliveryAddress, deliveryNumber, products } = order;
+  const createSale = async (order, userId) => {
+    const { sellerId, totalPrice, deliveryAddress, deliveryNumber, products } = order;
     const newDate = new Date();
 
     const data = await Sale.create({
