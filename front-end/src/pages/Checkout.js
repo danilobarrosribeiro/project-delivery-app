@@ -16,62 +16,69 @@ export default function Checkout() {
   //   setQuantity(value);
   // };
 
-  const getSellers = async () => {
-    const list = await requestGet('/sellers');
-    setSellers(list);
-  };
+  // const getSellers = async () => {
+  //   const list = await requestGet('/sellers');
+  //   setSellers(list);
+  // };
 
   useEffect(() => {
+    // getSellers();
     const { id, token } = getToLocal('user');
     setDataUser({ id, token });
     setToken(token);
   }, []);
   return (
-    <main>
+    <main className="container-checkout">
       <Header />
-      <h1>Finalizar Pedido</h1>
-      <CheckoutTable />
-
-      <h1>Detalhes e Endereço para Entrega</h1>
-      <section>
-
-        <label htmlFor="seller-input">
-          P. Vendedora Responsável:
-          <select
-            data-testid="customer_checkout__select-seller"
-            name="seller-input"
-          >
-            { sellers.map((seller) => <option key={ seller.id }>{seller.name}</option>)}
-
-          </select>
-        </label>
-        <label htmlFor="address-input">
-          Endereço
-          <input
-            type="text"
-            name="seller-input"
-            placeholder="Digite seu endereço"
-            data-testid="customer_checkout__input-address"
-          />
-        </label>
-        <label htmlFor="number-input">
-          Número
-          <input
-            type="number"
-            name="number-input"
-            data-testid="customer_checkout__input-address-number"
-          />
-        </label>
-        <button
-          type="button"
-          data-testid="customer_checkout__button-submit-order"
-        >
-          Finalizar pedido
-        </button>
+      <section className="container-section-checkout">
+        <h1>Finalizar Pedido</h1>
+        <CheckoutTable />
       </section>
-      <div>
-        {}
-      </div>
+      <section className="container-section-checkout">
+        <h1>Detalhes e Endereço para Entrega</h1>
+        <div className="line-checkout address-container">
+
+          <label htmlFor="seller-input">
+            P. Vendedora Responsável:
+            <select
+              data-testid="customer_checkout__select-seller"
+              name="seller-input"
+            >
+              { sellers.map((seller) => (
+                <option
+                  key={ seller.id }
+                  id={ seller.id }
+                >
+                  {seller.name}
+                </option>))}
+
+            </select>
+          </label>
+          <label htmlFor="address-input">
+            Endereço
+            <input
+              type="text"
+              name="seller-input"
+              placeholder="Digite seu endereço"
+              data-testid="customer_checkout__input-address"
+            />
+          </label>
+          <label htmlFor="number-input">
+            Número
+            <input
+              type="number"
+              name="number-input"
+              data-testid="customer_checkout__input-address-number"
+            />
+          </label>
+          <button
+            type="button"
+            data-testid="customer_checkout__button-submit-order"
+          >
+            Finalizar pedido
+          </button>
+        </div>
+      </section>
     </main>
   );
 }
