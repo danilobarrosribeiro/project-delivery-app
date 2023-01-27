@@ -1,8 +1,8 @@
-const { validateToken } = require('../utils/jwt.utils');
+const jwtUtils = require('../utils/jwt.utils');
 
 const authMiddleware = (req, res, next) => {
   const { authorization } = req.headers;
-  const { validated, data } = validateToken(authorization);
+  const { validated, data } = jwtUtils.validateToken(authorization);
   if (!validated) {
     return res.status(403).json({ message: 'You must provide a valid token' });
   }
