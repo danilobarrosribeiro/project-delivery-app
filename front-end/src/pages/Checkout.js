@@ -95,7 +95,7 @@ export default function Checkout() {
               type="text"
               name="deliveryAddress"
               placeholder="Digite seu endereço"
-              data-testid="customer_checkout__input-delivery"
+              data-testid="customer_checkout__input-address"
               value={ data.deliveryAddress }
               onChange={ handleChange }
             />
@@ -105,7 +105,7 @@ export default function Checkout() {
             <input
               type="number"
               name="deliveryNumber"
-              data-testid="customer_checkout__input-delivery-number"
+              data-testid="customer_checkout__input-address-number"
               value={ data.deliveryNumber }
               onChange={ handleChange }
             />
