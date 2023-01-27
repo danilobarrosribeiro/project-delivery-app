@@ -1,10 +1,4 @@
 const saleService = require('../services/sale.service');
-const jwtUtils = require('../utils/jwt.utils');
-
-const getAll = async (req, res) => {
-  const { type, message } = await saleService.getAll();
-  res.status(type).json(message);
-};
 
 const getById = async (req, res) => {
   const { id } = req.params;
@@ -13,31 +7,33 @@ const getById = async (req, res) => {
 };
 
 const createSale = async (req, res) => {
-  const { authorization } = req.headers;
-  const validateToken = jwtUtils.validateToken(authorization);
-  if (!validateToken) {
-    res.status(401).json({ message: 'Token não autorizado' });
-  } else {
-    delete req.body.payload;
+  delete req.body.payload;
   const order = req.body;
 
   const { type, message } = await saleService.createSale(order);
 
   res.status(type).json(message);
-  }
-};
+  };
 
 const getSalesByUserId = async (req, res) => {
   const userId = req.body.payload.id;
-  console.log(userId);
   const { type, message } = await saleService.getSalesByUserId(userId);
 
   res.status(type).json(message);
 };
 
+const updateSale = async (req, res) => {
+  const orderStatus = req.body.status;
+  const { id } = req.params;
+  const { payload } = req.body; 
+  const { type, message } = await saleService.updateSale(orderStatus, id, payload);
+
+  res.status(type).json(message);
+};
+
 module.exports = {
-  getAll,
   getById,
   createSale,
   getSalesByUserId,
+  updateSale,
 };
