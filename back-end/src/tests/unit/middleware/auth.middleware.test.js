@@ -24,14 +24,17 @@ describe('authMiddleware function', () => {
   });
 
   it('should authorize connection', () => {
-    // sinon.stub(jwtUtils, 'validateToken').returns({ validated: true, data: undefined });
-    // const authorization = 'sdand823rf0jef28yrfh2-9f';
-    // const res = {};
-    // const req = { headers: { authorization } };
-    // const next = new Function;
-    // next = sinon.stub.returns();
-    // authMiddleware(req, res, next);
-    // expect(next).to.have.been.called();
+    const payload = { id: 1, name: 'nome', email: 'email@email.com', role: 'customer'}
+    sinon.stub(jwtUtils, 'validateToken').returns({ validated: true, data: { payload } })
+    const authorization = 'sdand823rf0jef28yrfh2-9f';
+    const res = {};
+    const req = { headers: { authorization }, body: {} };
+    let nextCalled = false;
+    const next = () => { nextCalled = true };
+    // sinon.stub(jwtUtils, 'validateToken').returns({ validated: true, data: { } });
+    authMiddleware(req, res, next);
+    // expect(next).toBeCalledTimes(1);
+    expect(nextCalled).to.be.equal(true)
   });
 
   afterEach(() => {
