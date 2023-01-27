@@ -25,7 +25,8 @@ const getSalesByUserId = async (req, res) => {
 const updateSale = async (req, res) => {
   const orderStatus = req.body.status;
   const { id } = req.params;
-  const { type, message } = await saleService.updateSale(orderStatus, id);
+  const { payload } = req.body; 
+  const { type, message } = await saleService.updateSale(orderStatus, id, payload);
 
   res.status(type).json(message);
 };

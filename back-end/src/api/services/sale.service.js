@@ -55,14 +55,25 @@ const { Sale, SaleProduct } = require('../../database/models');
     return { type: 200, message: order };
   };
 
-  const updateSale = async (status, id) => {
-    const result = await Sale.update({ status }, { where: { id } });
+  const updateSale = async (status, id, payload) => {
+    const saleId = id;
+    // const { role } = payload;
+    const userId = payload.id;
+    const sellerStatus = ['Em Trânsito', 'Preparando'];
 
-    if (!result) {
-      return { type: 409, message: { message: 'Não foi possível atualizar o pedido' } };
+    const sale = await Sale.findByPk(saleId);
+
+    if (status === 'Entregue' && userId === sale.userId) {
+      const result = await Sale.update({ status }, { where: { id: saleId } });
+
+      return { type: 200, message: result };
+    } if (sellerStatus.includes(status) && userId === sale.sellerId) {
+      const result = await Sale.update({ status }, { where: { id: saleId } });
+
+      return { type: 200, message: result };
     }
 
-    return { type: 200, message: result };
+    return { type: 403, message: { message: 'Usuário não autorizado' } };
   };
 
 module.exports = {
