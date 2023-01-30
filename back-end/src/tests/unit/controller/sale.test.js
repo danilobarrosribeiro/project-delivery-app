@@ -1,7 +1,7 @@
 const chai = require('chai');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
-const { getById, createSale } = require('../../../api/controllers/sale.controller');
+const { getById, createSale, getSalesByUserId, updateSale } = require('../../../api/controllers/sale.controller');
 const saleService = require('../../../api/services/sale.service');
 
 const { expect } = chai;
@@ -34,13 +34,37 @@ describe('sale controller layer tests', () => {
     res.json = sinon.stub().returns();
 
     await createSale(req, res);
-    expect()
-    expect
+    expect(res.status).to.have.been.calledWith(type);
+    expect(res.json).to.have.been.calledWith(message);
   });
+  it('getSalesByUserId function', async () => {
+    const req = { body: { payload: { id: 1} } };
+    const res = {};
+    const type = 200;
+    const message = { message: 'message' };
 
+    sinon.stub(saleService, 'getSalesByUserId').resolves({ type, message});
+    res.status = sinon.stub().returns(res);
+    res.json = sinon.stub().returns();
 
+    await getSalesByUserId(req, res);
+    expect(res.status).to.have.been.calledWith(type);
+    expect(res.json).to.have.been.calledWith(message);
+  });
+  it('updateSale function', async () => {
+    const req = { body: { status: 1, payload: 'payload' }, params: { id: '1' } };
+    const res = {};
+    const type = 200;
+    const message = { message: 'message' };
 
+    sinon.stub(saleService, 'updateSale').resolves({ type, message});
+    res.status = sinon.stub().returns(res);
+    res.json = sinon.stub().returns();
 
+    await updateSale(req, res);
+    expect(res.status).to.have.been.calledWith(type);
+    expect(res.json).to.have.been.calledWith(message);    
+  });
   afterEach(() => {
     sinon.restore();
   });
