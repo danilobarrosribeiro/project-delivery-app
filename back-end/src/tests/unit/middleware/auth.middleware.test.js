@@ -34,7 +34,7 @@ describe('authMiddleware function', () => {
     // sinon.stub(jwtUtils, 'validateToken').returns({ validated: true, data: { } });
     authMiddleware(req, res, next);
     // expect(next).toBeCalledTimes(1);
-    expect(nextCalled).to.be.equal(true)
+    expect(nextCalled).to.be.equal(true);
   });
 
   afterEach(() => {
