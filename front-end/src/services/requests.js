@@ -14,7 +14,6 @@ export const requestGet = async (endpoint) => {
 };
 
 export const requestPost = async (endpoint, body) => {
-  console.log(endpoint, body);
   const { data } = await api.post(endpoint, body);
   return data;
 };

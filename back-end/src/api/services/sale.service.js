@@ -21,8 +21,8 @@ const { Sale, SaleProduct } = require('../../database/models');
     );
   };
   
-  const createSale = async (order) => {
-    const { userId, sellerId, totalPrice, deliveryAddress, deliveryNumber, products } = order;
+  const createSale = async (order, userId) => {
+    const { sellerId, totalPrice, deliveryAddress, deliveryNumber, products } = order;
     const newDate = new Date();
 
     const data = await Sale.create({
@@ -32,14 +32,14 @@ const { Sale, SaleProduct } = require('../../database/models');
       deliveryAddress,
       deliveryNumber,
       saleDate: newDate,
-      status: 'pendente',
+      status: 'Pendente',
     });
     if (!data) {
       return { type: 409, message: { message: 'Não foi possivel cadastrar o pedido' } };
     }
 
     await createProductSale(data.id, products);
-    return { type: 200, message: data };
+    return { type: 201, message: data };
   };
 
   const getSalesByUserId = async (userId) => {

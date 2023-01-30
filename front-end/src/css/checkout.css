@@ -1,0 +1,38 @@
+.container-checkout {
+  align-items: center;
+  background-color: rgb(228, 228, 228);
+  display: flex;
+  flex-flow: column wrap;
+  height: 100vh;
+  justify-content: space-evenly;
+  width: 100vw;
+}
+
+.table-checkout {
+  border: 2px solid white;
+  border-radius: 10px;
+  padding: 50px 20px;
+  width: 100%;
+}
+
+.container-section-checkout {
+  width: 80%;
+}
+
+.line-checkout {
+  border: 2px solid white;
+  border-radius: 10px;
+  font-size: 20px;
+  padding: 10px;
+}
+
+.total-value {
+  align-items: center;
+  display: flex;
+  width: 150px;
+}
+
+.address-container {
+  height: 10%;
+  width: 80%;
+}

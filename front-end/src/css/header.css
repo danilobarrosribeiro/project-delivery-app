@@ -5,6 +5,8 @@
   height: 100px;
   justify-content: space-between;
   opacity: 0.8;
+  position: fixed;
+  top: 0;
   width: 100%;
 }
 
