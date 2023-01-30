@@ -9,6 +9,7 @@ export default function DrinkCard({ drink }) {
   const { name, price, id, url_image: image } = drink;
 
   const handleChange = ({ target: { value } }) => {
+    if (value < 0) return setQuantity(0);
     setQuantity(value);
   };
 

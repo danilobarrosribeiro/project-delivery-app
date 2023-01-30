@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../css/header.css';
+// import '../css/header.css';
 import logo from '../css/images/logo.jpg';
 
 export default function Headers() {

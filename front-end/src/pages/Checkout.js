@@ -4,6 +4,7 @@ import Context from '../context/Context';
 import Header from '../components/Header';
 import { requestGet, setToken, requestPost } from '../services/requests';
 import CheckoutTable from '../components/CheckoutTable';
+// import '../css/checkout.css';
 
 export default function Checkout() {
   const navigate = useNavigate();
