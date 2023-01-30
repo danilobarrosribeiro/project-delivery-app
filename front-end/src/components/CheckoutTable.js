@@ -4,20 +4,10 @@ import Context from '../context/Context';
 
 export default function CheckoutTable() {
   const [drinks, setDrinks] = useState([]);
-  // const [quantityCart, setQuantityCart] = useState([]);
+  const [testId, setTestId] = useState('checkout');
+  const pathCheckout = '/customer/checkout';
   const { saveToLocal, getToLocal } = useContext(Context);
   const location = useLocation();
-
-  // const setNewDrinks = (i, value) => {
-  //   const newDrinks = drinks.map((drink, ind) => {
-  //     if (ind === i) {
-  //       return { ...drink, quantity: value };
-  //     }
-  //     return drink;
-  //   });
-  //   setDrinks(newDrinks);
-  //   saveToLocal('cartDrinks', newDrinks);
-  // };
 
   const setTotal = () => {
     const totalPrice = drinks.reduce((a, b) => a + Number(b.price * b.quantity), 0)
@@ -25,17 +15,6 @@ export default function CheckoutTable() {
     saveToLocal('totalPrice', totalPrice);
     return totalPrice;
   };
-
-  // const handleChange = ({ target: { value, id } }) => {
-  //   const newQuantitys = quantityCart.map((quantity, i) => {
-  //     if (i === Number(id) && value > 0) {
-  //       setNewDrinks(i, value);
-  //       return value;
-  //     }
-  //     return quantity;
-  //   });
-  //   setQuantityCart(newQuantitys);
-  // };
 
   const setSubTotal = (price, quantity) => {
     const numberTotal = Number(price * quantity);
@@ -46,7 +25,9 @@ export default function CheckoutTable() {
   useEffect(() => {
     const cartDrinks = getToLocal('cartDrinks');
     setDrinks(cartDrinks);
-    // setQuantityCart(cartDrinks.map((d) => d.quantity));
+    if (location.pathname !== pathCheckout) {
+      setTestId('order-details');
+    }
   }, []);
 
   useEffect(() => {
@@ -67,7 +48,9 @@ export default function CheckoutTable() {
           <th className="line-checkout">Quantidade</th>
           <th className="line-checkout">Valor Unitário</th>
           <th className="line-checkout">Sub-total</th>
-          <th className="line-checkout">Remover Item</th>
+          { location.pathname === pathCheckout ? (
+            <th className="line-checkout">Remover Item</th>
+          ) : null }
         </tr>
       </thead>
       <tbody>
@@ -79,7 +62,7 @@ export default function CheckoutTable() {
               <td
                 className="line-checkout"
                 data-testid={
-                  `customer_checkout__element-order-table-item-number-${index}`
+                  `customer_${testId}__element-order-table-item-number-${index}`
                 }
               >
                 { index + 1 }
@@ -87,7 +70,7 @@ export default function CheckoutTable() {
               </td>
               <td
                 className="line-checkout"
-                data-testid={ `customer_checkout__element-order-table-name-${index}` }
+                data-testid={ `customer_${testId}__element-order-table-name-${index}` }
               >
                 { name }
 
@@ -98,7 +81,7 @@ export default function CheckoutTable() {
 
                 <p
                   data-testid={
-                    `customer_checkout__element-order-table-quantity-${index}`
+                    `customer_${testId}__element-order-table-quantity-${index}`
                   }
                 >
                   {quantity}
@@ -108,7 +91,7 @@ export default function CheckoutTable() {
               <td
                 className="line-checkout"
                 data-testid={
-                  `customer_checkout__element-order-table-unit-price-${index}`
+                  `customer_${testId}__element-order-table-unit-price-${index}`
                 }
               >
                 {price.toString().replace('.', ',')}
@@ -117,14 +100,14 @@ export default function CheckoutTable() {
               <td
                 className="line-checkout"
                 data-testid={
-                  `customer_checkout__element-order-table-sub-total-${index}`
+                  `customer_${testId}__element-order-table-sub-total-${index}`
                 }
               >
                 { subTotal }
 
               </td>
               {
-                location.pathname === '/customer/checkout' ? (
+                location.pathname === pathCheckout ? (
                   <td
                     className="line-checkout"
                     data-testid={
@@ -146,7 +129,7 @@ export default function CheckoutTable() {
           <td className="line-checkout total-value">
             {' '}
             Total: R$
-            <div data-testid="customer_checkout__element-order-total-price">
+            <div data-testid={ `customer_${testId}__element-order-total-price` }>
               { setTotal() }
             </div>
           </td>

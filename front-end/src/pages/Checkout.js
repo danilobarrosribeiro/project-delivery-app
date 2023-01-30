@@ -8,6 +8,7 @@ import CheckoutTable from '../components/CheckoutTable';
 
 export default function Checkout() {
   const navigate = useNavigate();
+
   const { getToLocal } = useContext(Context);
   const [data, setData] = useState({
     sellerName: '',
@@ -22,8 +23,9 @@ export default function Checkout() {
   const getSellers = async () => {
     try {
       const list = await requestGet('/sellers');
-      setData({ ...data, sellerName: list[0].name });
       setSellers(list);
+      setData({ ...data, sellerName: list[0].name });
+      return list;
     } catch (err) {
       console.log(err);
     }
@@ -39,26 +41,23 @@ export default function Checkout() {
 
   useEffect(() => {
     getSellers();
+
     const { token } = getToLocal('user');
     setToken(token);
   }, []);
 
   const sendDataToDB = async () => {
-    const totalPrice = getToLocal('totalPrice');
-    const products = getToLocal('cartDrinks')
-      .map(({ id, quantity }) => ({ productId: id, quantity: Number(quantity) }));
-    const seller = sellers.find((e) => e.name === data.sellerName);
-    console.log({
-      ...data, sellerId: seller.id, totalPrice, products });
     try {
+      const totalPrice = getToLocal('totalPrice');
+      const products = getToLocal('cartDrinks')
+        .map(({ id, quantity }) => ({ productId: id, quantity: Number(quantity) }));
       const { id } = await requestPost('/customer/orders', {
         ...data,
-        sellerId: seller.id,
         totalPrice: Number(totalPrice.replace(',', '.')),
         products });
       navigate(`/customer/orders/${id}`);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -78,12 +77,14 @@ export default function Checkout() {
             <select
               data-testid="customer_checkout__select-seller"
               onChange={ handleChange }
-              name="sellerName"
+              name="sellerId"
+              // value={ sellers[0].name }
             >
               { sellers.map((seller) => (
                 <option
                   key={ seller.id }
                   id={ seller.id }
+                  value={ seller.id }
                 >
                   { seller.name }
                 </option>))}

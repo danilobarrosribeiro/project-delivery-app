@@ -32,14 +32,14 @@ const { Sale, SaleProduct } = require('../../database/models');
       deliveryAddress,
       deliveryNumber,
       saleDate: newDate,
-      status: 'pendente',
+      status: 'Pendente',
     });
     if (!data) {
       return { type: 409, message: { message: 'Não foi possivel cadastrar o pedido' } };
     }
 
     await createProductSale(data.id, products);
-    return { type: 200, message: data };
+    return { type: 201, message: data };
   };
 
   const getSalesByUserId = async (userId) => {

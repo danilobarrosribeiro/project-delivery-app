@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Products from './pages/Products';
 import Checkout from './pages/Checkout';
+import OrderDetails from './pages/OrderDetails';
 
 // import rockGlass from './images/rockGlass.svg';
 // <div className="App">
@@ -25,6 +26,7 @@ function App() {
           <Route path="/register" element={ <SignUp /> } />
           <Route path="/customer/products" element={ <Products /> } />
           <Route path="/customer/checkout" element={ <Checkout /> } />
+          <Route path="/customer/orders/:id" element={ <OrderDetails /> } />
         </Routes>
       </Provider>
     </BrowserRouter>
