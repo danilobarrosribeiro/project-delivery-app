@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Headers from '../components/Headers';
+import Headers from '../components/Header';
 import { requestGet } from '../services/requests';
 
 export default function Orders() {
