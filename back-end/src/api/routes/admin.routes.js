@@ -4,6 +4,8 @@ const adminController = require('../controllers/admin.controller');
 
 const router = express.Router();
 
-router.post('/register', authMiddleware, adminController.createSellerLogin);
+router.post('/register',
+authMiddleware,
+adminController.createSellerLogin);
 
 module.exports = router;
