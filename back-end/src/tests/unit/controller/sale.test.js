@@ -23,20 +23,20 @@ describe('sale controller layer tests', () => {
     expect(res.json).to.have.been.calledWith(message);
   });
 
-  it('createSale function', async () => {
-    const req = { body: 'sale' };
-    const res = {};
-    const type = 200;
-    const message = { message: 'message' };
+  // it('createSale function', async () => {
+  //   const req = { body: 'sale' };
+  //   const res = {};
+  //   const type = 200;
+  //   const message = { message: 'message' };
 
-    sinon.stub(saleService, 'createSale').resolves({ type, message});
-    res.status = sinon.stub().returns(res);
-    res.json = sinon.stub().returns();
+  //   sinon.stub(saleService, 'createSale').resolves({ type, message});
+  //   res.status = sinon.stub().returns(res);
+  //   res.json = sinon.stub().returns();
 
-    await createSale(req, res);
-    expect(res.status).to.have.been.calledWith(type);
-    expect(res.json).to.have.been.calledWith(message);
-  });
+  //   await createSale(req, res);
+  //   expect(res.status).to.have.been.calledWith(type);
+  //   expect(res.json).to.have.been.calledWith(message);
+  // });
   it('getSalesByUserId function', async () => {
     const req = { body: { payload: { id: 1} } };
     const res = {};

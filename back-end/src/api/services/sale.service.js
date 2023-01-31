@@ -1,4 +1,6 @@
-const { Sale, SaleProduct, Product, User } = require('../../database/models');
+const models = require('../../database/models');
+
+const { Sale, SaleProduct, Product, User } = models;
 
   const mountSaleProducts = (products, productsOrder) => {
     console.log(products);
@@ -54,7 +56,7 @@ const { Sale, SaleProduct, Product, User } = require('../../database/models');
     const { sellerId, totalPrice, deliveryAddress, deliveryNumber, products } = order;
     const newDate = new Date();
 
-    const data = await Sale.create({
+    const data = await models.Sale.create({
       userId,
       sellerId,
       totalPrice,
@@ -115,5 +117,3 @@ module.exports = {
   getSalesByUserId,
   updateSale,
 };
-
-// https://stackoverflow.com/questions/64390713/asynchronous-verification-within-the-map-function/
