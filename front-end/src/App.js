@@ -27,8 +27,8 @@ function App() {
           <Route path="/register" element={ <SignUp /> } />
           <Route path="/customer/products" element={ <Products /> } />
           <Route path="/customer/checkout" element={ <Checkout /> } />
-          <Route exact path="/customer/orders" element={ <Orders /> } />
           <Route exact path="/customer/orders/:id" element={ <OrderDetails /> } />
+          <Route exact path="/customer/orders" element={ <Orders /> } />
         </Routes>
       </Provider>
     </BrowserRouter>

@@ -3,27 +3,27 @@ import { useParams } from 'react-router-dom';
 import Headers from '../components/Header';
 import Context from '../context/Context';
 import CheckoutTable from '../components/CheckoutTable';
-import { requestGet } from '../services/requests';
+import { requestGet, setToken } from '../services/requests';
 
 export default function Orders() {
-  const { saveToLocal, getToLocal } = useContext(Context);
+  const { getToLocal, formatDate } = useContext(Context);
   const testId = 'customer_order_details__element-order-details-label-delivery-status';
   const [role, setRole] = useState('customer');
   const [sale, setSale] = useState({});
   const { id } = useParams();
-  // .toLocaleDateString('pt-br')
 
-  const getSaleById = async () => {
+  const getSaleById = async ({ token }) => {
+    setToken(token);
+    console.log(token);
     const saleById = await requestGet(`/customer/orders/${id}`);
     setSale(saleById);
-    saveToLocal('cartDrinks', saleById.products);
+    // saveToLocal('cartDrinks', saleById.products);
   };
 
   useEffect(() => {
     const localUser = getToLocal('user');
-    console.log(localUser.role);
-    getSaleById();
     setRole(localUser.role);
+    getSaleById(localUser);
   }, []);
 
   return (
@@ -45,7 +45,7 @@ export default function Orders() {
               `${role}_order_details__element-order-details-label-order-date`
             }
           >
-            { sale.saleDate }
+            { formatDate(sale.saleDate) }
           </p>
           <p
             data-testid={ testId }

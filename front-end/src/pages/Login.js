@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { requestPost, setToken } from '../services/requests';
 import Context from '../context/Context';
@@ -12,7 +12,7 @@ function Login() {
   });
   const [invalidMessage, setInvalidMessage] = useState(true);
   const navigate = useNavigate();
-  const { saveToLocal } = useContext(Context);
+  const { saveToLocal, getToLocal } = useContext(Context);
 
   const handleChange = ({ target: { value, name } }) => {
     setLogin({ ...login, [name]: value });
@@ -39,6 +39,13 @@ function Login() {
     const regex = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;
     return !(password.length >= six && regex.test(email));
   };
+
+  useEffect(() => {
+    const user = getToLocal('user');
+    if (user && user?.role === 'customer') {
+      return navigate('/customer/products');
+    }
+  });
 
   return (
     <div className="container">

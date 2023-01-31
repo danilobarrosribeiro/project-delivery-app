@@ -11,7 +11,6 @@ export default function Checkout() {
 
   const { getToLocal } = useContext(Context);
   const [data, setData] = useState({
-    sellerName: '',
     sellerId: '',
     deliveryAddress: '',
     deliveryNumber: '',
@@ -24,7 +23,7 @@ export default function Checkout() {
     try {
       const list = await requestGet('/sellers');
       setSellers(list);
-      setData({ ...data, sellerName: list[0].name });
+      setData({ ...data, sellerId: list[0]?.id });
       return list;
     } catch (err) {
       console.log(err);
@@ -41,7 +40,6 @@ export default function Checkout() {
 
   useEffect(() => {
     getSellers();
-
     const { token } = getToLocal('user');
     setToken(token);
   }, []);
@@ -55,6 +53,7 @@ export default function Checkout() {
         ...data,
         totalPrice: Number(totalPrice.replace(',', '.')),
         products });
+      // saveToLocal('cartDrinks', []);
       navigate(`/customer/orders/${id}`);
     } catch (error) {
       console.error(error);
@@ -78,7 +77,6 @@ export default function Checkout() {
               data-testid="customer_checkout__select-seller"
               onChange={ handleChange }
               name="sellerId"
-              // value={ sellers[0].name }
             >
               { sellers.map((seller) => (
                 <option

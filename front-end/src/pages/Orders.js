@@ -12,9 +12,8 @@ export default function Orders() {
 
   const getOrders = async () => {
     let orders = [];
-    console.log(pathname);
     if (pathname === '/customer/orders') {
-      orders = await requestGet('/customers/orders');
+      orders = await requestGet('/customer/orders');
       setAllOrders(orders);
     } else {
       orders = await requestGet('/seller/orders');
@@ -26,7 +25,8 @@ export default function Orders() {
     const { token } = getToLocal('user');
     setToken(token);
     getOrders();
-  });
+  }, []);
+
   return (
     <div>
       <Headers />
