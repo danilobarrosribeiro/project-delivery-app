@@ -1,4 +1,5 @@
-const { Sale, SaleProduct } = require('../../database/models');
+const models = require('../../database/models');
+const { Sale, SaleProduct } = models;
 
   const getById = async (id) => {
     const order = await Sale.findOne({ where: { id } });
@@ -25,7 +26,7 @@ const { Sale, SaleProduct } = require('../../database/models');
     const { sellerId, totalPrice, deliveryAddress, deliveryNumber, products } = order;
     const newDate = new Date();
 
-    const data = await Sale.create({
+    const data = await models.Sale.create({
       userId,
       sellerId,
       totalPrice,
