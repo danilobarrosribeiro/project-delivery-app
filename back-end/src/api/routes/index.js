@@ -13,5 +13,5 @@ routers.use('/login', loginRoutes);
 routers.use('/register', registerRoutes);
 routers.use('/admin', adminRoutes);
 routers.use('/customer/orders', saleRoutes);
-routers.use('/sellers', sellerRoutes);
+routers.use('/seller', sellerRoutes);
 module.exports = routers;

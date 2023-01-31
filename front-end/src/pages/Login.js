@@ -27,7 +27,17 @@ function Login() {
 
       saveToLocal('user', { name, email, role, token });
       saveToLocal('cartDrinks', []);
-      return navigate(`/${role}/products`);
+      switch (role) {
+      case 'seller':
+        navigate('/seller/orders');
+        break;
+      case 'administrator':
+        navigate('/admin');
+        break;
+      default:
+        navigate('/customer/products');
+        break;
+      }
     } catch (e) {
       setInvalidMessage(false);
     }
