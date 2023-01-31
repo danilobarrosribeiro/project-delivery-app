@@ -1,4 +1,6 @@
-const { Sale, SaleProduct, Product } = require('../../database/models');
+const models = require('../../database/models');
+const { Sale, SaleProduct, Product } = models;
+
 
   const mountSaleProducts = (products, productsOrder) => {
     console.log(products);
@@ -52,7 +54,7 @@ const { Sale, SaleProduct, Product } = require('../../database/models');
     const { sellerId, totalPrice, deliveryAddress, deliveryNumber, products } = order;
     const newDate = new Date();
 
-    const data = await Sale.create({
+    const data = await models.Sale.create({
       userId,
       sellerId,
       totalPrice,
