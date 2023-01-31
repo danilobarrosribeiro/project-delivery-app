@@ -91,11 +91,15 @@ const { Sale, SaleProduct, Product } = require('../../database/models');
     const sale = await Sale.findByPk(saleId);
 
     if (status === 'Entregue' && userId === sale.userId) {
-      const result = await Sale.update({ status }, { where: { id: saleId }, returning: true, plain:true });
+      const result = await Sale.update({ status }, { where: { id: saleId }, 
+        returning: true,
+        plain: true });
       console.log(result);
       return { type: 200, message: result };
     } if (sellerStatus.includes(status) && userId === sale.sellerId) {
-      const result = await Sale.update({ status }, { where: { id: saleId }, returning: true, plain:true });
+      const result = await Sale.update({ status }, { where: { id: saleId }, 
+        returning: true,
+        plain: true });
       console.log(result);
       return { type: 200, message: result };
     }
