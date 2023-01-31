@@ -1,6 +1,6 @@
 const models = require('../../database/models');
-const { Sale, SaleProduct, Product } = models;
 
+const { Sale, SaleProduct, Product } = models;
 
   const mountSaleProducts = (products, productsOrder) => {
     console.log(products);
@@ -111,5 +111,3 @@ module.exports = {
   getSalesByUserId,
   updateSale,
 };
-
-// https://stackoverflow.com/questions/64390713/asynchronous-verification-within-the-map-function/
