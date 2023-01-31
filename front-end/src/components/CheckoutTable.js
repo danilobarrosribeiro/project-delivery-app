@@ -5,6 +5,7 @@ import Context from '../context/Context';
 export default function CheckoutTable() {
   const [drinks, setDrinks] = useState([]);
   const [testId, setTestId] = useState('checkout');
+  const [role, setRole] = useState('customer');
   const pathCheckout = '/customer/checkout';
   const { saveToLocal, getToLocal } = useContext(Context);
   const location = useLocation();
@@ -24,15 +25,13 @@ export default function CheckoutTable() {
 
   useEffect(() => {
     const cartDrinks = getToLocal('cartDrinks');
+    const user = getToLocal('user');
+    setRole(user.role);
     setDrinks(cartDrinks);
     if (location.pathname !== pathCheckout) {
       setTestId('order_details');
     }
   }, []);
-
-  useEffect(() => {
-    saveToLocal('cartDrinks', drinks);
-  }, [drinks]);
 
   const removeDrink = (id) => {
     const newDrinks = drinks.filter((d) => d.id !== id);
@@ -62,7 +61,7 @@ export default function CheckoutTable() {
               <td
                 className="line-checkout"
                 data-testid={
-                  `customer_${testId}__element-order-table-item-number-${index}`
+                  `${role}_${testId}__element-order-table-item-number-${index}`
                 }
               >
                 { index + 1 }
@@ -70,7 +69,7 @@ export default function CheckoutTable() {
               </td>
               <td
                 className="line-checkout"
-                data-testid={ `customer_${testId}__element-order-table-name-${index}` }
+                data-testid={ `${role}_${testId}__element-order-table-name-${index}` }
               >
                 { name }
 
@@ -81,7 +80,7 @@ export default function CheckoutTable() {
 
                 <p
                   data-testid={
-                    `customer_${testId}__element-order-table-quantity-${index}`
+                    `${role}_${testId}__element-order-table-quantity-${index}`
                   }
                 >
                   {quantity}
@@ -91,7 +90,7 @@ export default function CheckoutTable() {
               <td
                 className="line-checkout"
                 data-testid={
-                  `customer_${testId}__element-order-table-unit-price-${index}`
+                  `${role}_${testId}__element-order-table-unit-price-${index}`
                 }
               >
                 {price.toString().replace('.', ',')}
@@ -100,7 +99,7 @@ export default function CheckoutTable() {
               <td
                 className="line-checkout"
                 data-testid={
-                  `customer_${testId}__element-order-table-sub-total-${index}`
+                  `${role}_${testId}__element-order-table-sub-total-${index}`
                 }
               >
                 { subTotal }
@@ -111,7 +110,7 @@ export default function CheckoutTable() {
                   <td
                     className="line-checkout"
                     data-testid={
-                      `customer_checkout__element-order-table-remove-${index}`
+                      `${role}_checkout__element-order-table-remove-${index}`
                     }
                   >
                     <button type="button" onClick={ () => removeDrink(id) }>
@@ -129,7 +128,7 @@ export default function CheckoutTable() {
           <td className="line-checkout total-value">
             {' '}
             Total: R$
-            <div data-testid={ `customer_${testId}__element-order-total-price` }>
+            <div data-testid={ `${role}_${testId}__element-order-total-price` }>
               { setTotal() }
             </div>
           </td>

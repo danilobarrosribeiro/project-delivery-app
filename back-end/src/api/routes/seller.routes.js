@@ -6,7 +6,7 @@ const authMiddleware = require('../middlewres/auth.middleware');
 const router = express.Router();
 router.get('/', authMiddleware, sellerController.getAllSellers);
 router.get('/orders', authMiddleware, sellerController.getSalesBySellerId);
-router.get('/:id', authMiddleware, saleController.getById);
-router.put('/:id', authMiddleware, saleController.updateSale);
+router.get('/orders/:id', authMiddleware, saleController.getById);
+router.put('/orders/:id', authMiddleware, saleController.updateSale);
 
 module.exports = router;

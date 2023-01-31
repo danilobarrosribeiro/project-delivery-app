@@ -3,32 +3,43 @@ import { useParams } from 'react-router-dom';
 import Headers from '../components/Header';
 import Context from '../context/Context';
 import CheckoutTable from '../components/CheckoutTable';
-import { requestGet, setToken } from '../services/requests';
+import { requestGet, setToken, requestPut } from '../services/requests';
 
 export default function Orders() {
   const { getToLocal, formatDate } = useContext(Context);
-  const testId = 'customer_order_details__element-order-details-label-delivery-status';
   const [role, setRole] = useState('customer');
   const [sale, setSale] = useState({});
   const { id } = useParams();
 
-  const getSaleById = async (localUser) => {
-    setRole(localUser.role);
-    setToken(localUser.token);
-    const saleById = await requestGet(`/customer/orders/${id}`);
+  const getSaleById = async () => {
+    const saleById = await requestGet(`/${role}/orders/${id}`);
     setSale(saleById);
-    console.log(saleById);
-    // saveToLocal('cartDrinks', saleById.products);
   };
 
   const getNameSeller = (sellerId) => {
     const sellers = getToLocal('sellers');
-    return sellers.find((seller) => Number(seller.id) === Number(sellerId));
+    if (sellers) return sellers.find((seller) => Number(seller.id) === Number(sellerId));
+  };
+
+  const updateStatus = async ({ target: { name } }) => {
+    try {
+      let newStatus = 'Em Trânsito';
+      if (name === 'preparing') {
+        newStatus = 'Preparando';
+      }
+      console.log(newStatus);
+      await requestPut(`${role}/orders/${id}`, { status: newStatus });
+      setSale(await requestGet(`/${role}/orders/${id}`));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     const localUser = getToLocal('user');
-    getSaleById(localUser);
+    setRole(localUser.role);
+    setToken(localUser.token);
+    getSaleById();
   }, []);
 
   return (
@@ -37,14 +48,21 @@ export default function Orders() {
         <Headers />
         <h1>Detalhe do Pedido</h1>
         <div>
-          <p data-testid="customer_order_details__element-order-details-label-order-id">
+          <p
+            data-testid={
+              `${role}_order_details__element-order-details-label-order-id`
+            }
+          >
             { `PEDIDO ${sale.id}` }
           </p>
-          <p
-            data-testid="customer_order_details__element-order-details-label-seller-name"
-          >
-            { `P.Vend: ${getNameSeller(sale.sellerId)?.name}` }
-          </p>
+          { role === 'customer' ? (
+            <p
+              data-testid={ `customer_order_details__
+              element-order-details-label-seller-name` }
+            >
+              { `P.Vend: ${getNameSeller(sale.sellerId)?.name}` }
+            </p>
+          ) : null }
           <p
             data-testid={
               `${role}_order_details__element-order-details-label-order-date`
@@ -53,7 +71,9 @@ export default function Orders() {
             { formatDate(sale.saleDate) }
           </p>
           <p
-            data-testid={ testId }
+            data-testid={
+              `${role}_order_details__element-order-details-label-delivery-status`
+            }
           >
             { sale.status }
           </p>
@@ -67,8 +87,26 @@ export default function Orders() {
             </button>
           ) : (
             <div>
-              <button type="button">PREPARAR PEDIDO</button>
-              <button type="button">SAIU PRA ENTREGA</button>
+              <button
+                type="button"
+                data-testid="seller_order_details__button-preparing-check"
+                disabled={ sale.status !== 'Pendente' }
+                name="preparing"
+                onClick={ (event) => updateStatus(event) }
+              >
+                PREPARAR PEDIDO
+
+              </button>
+              <button
+                type="button"
+                data-testid="seller_order_details__button-dispatch-check"
+                name="dispatch"
+                disabled={ sale.status !== 'Preparando' }
+                onClick={ (event) => updateStatus(event) }
+              >
+                SAIU PRA ENTREGA
+
+              </button>
             </div>
           )}
           <CheckoutTable />

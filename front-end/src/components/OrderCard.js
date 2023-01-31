@@ -2,9 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Context from '../context/Context';
+import { requestGet } from '../services/requests';
 
 export default function OrderCard({ order }) {
-  const { formatDate } = useContext(Context);
+  const { formatDate, saveToLocal, getToLocal } = useContext(Context);
   const [testId, setTestId] = useState('checkout');
   const { id, status, saleDate, totalPrice } = order;
   const { pathname } = useLocation();
@@ -15,7 +16,19 @@ export default function OrderCard({ order }) {
   }, []);
 
   return (
-    <button type="button" onClick={ () => navigate(`${id}`) }>
+    <button
+      type="button"
+      onClick={ async () => {
+        try {
+          const { role } = getToLocal('user');
+          const { products } = await requestGet(`/${role}/orders/${id}`);
+          saveToLocal('cartDrinks', products);
+          navigate(`${id}`);
+        } catch (error) {
+          console.log(error);
+        }
+      } }
+    >
       <div
         data-testid={ `${testId}_orders__element-order-id-${id}` }
       >
