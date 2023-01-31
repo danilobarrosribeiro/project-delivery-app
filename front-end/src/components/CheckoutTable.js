@@ -26,7 +26,7 @@ export default function CheckoutTable() {
     const cartDrinks = getToLocal('cartDrinks');
     setDrinks(cartDrinks);
     if (location.pathname !== pathCheckout) {
-      setTestId('order-details');
+      setTestId('order_details');
     }
   }, []);
 

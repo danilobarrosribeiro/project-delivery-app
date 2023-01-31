@@ -8,7 +8,7 @@ export default function OrderCard({ order }) {
   const { id, status, saleDate, totalPrice } = order;
   const navigate = useNavigate();
   return (
-    <button type="button" onClick={ () => navigate(`customer/orders/${id}`) }>
+    <button type="button" onClick={ () => navigate(`${id}`) }>
       <div
         data-testid={ `customer_orders__element-order-id-${id}` }
       >

@@ -12,17 +12,22 @@ export default function Orders() {
   const [sale, setSale] = useState({});
   const { id } = useParams();
 
-  const getSaleById = async ({ token }) => {
-    setToken(token);
-    console.log(token);
+  const getSaleById = async (localUser) => {
+    setRole(localUser.role);
+    setToken(localUser.token);
     const saleById = await requestGet(`/customer/orders/${id}`);
     setSale(saleById);
+    console.log(saleById);
     // saveToLocal('cartDrinks', saleById.products);
+  };
+
+  const getNameSeller = (sellerId) => {
+    const sellers = getToLocal('sellers');
+    return sellers.find((seller) => Number(seller.id) === Number(sellerId));
   };
 
   useEffect(() => {
     const localUser = getToLocal('user');
-    setRole(localUser.role);
     getSaleById(localUser);
   }, []);
 
@@ -33,12 +38,12 @@ export default function Orders() {
         <h1>Detalhe do Pedido</h1>
         <div>
           <p data-testid="customer_order_details__element-order-details-label-order-id">
-            { `PEDIDO ${sale.deliveryNumber}` }
+            { `PEDIDO ${sale.id}` }
           </p>
           <p
             data-testid="customer_order_details__element-order-details-label-seller-name"
           >
-            { `P.Vend: ${sale.sellerName}` }
+            { `P.Vend: ${getNameSeller(sale.sellerId)?.name}` }
           </p>
           <p
             data-testid={
@@ -55,7 +60,8 @@ export default function Orders() {
           { role === 'customer' ? (
             <button
               type="button"
-              data-testeid="customer_order_details__button-delivery-check"
+              data-testid="customer_order_details__button-delivery-check"
+              disabled={ sale.status !== 'Em Trânsito' }
             >
               MARCAR COMO ENTREGUE
             </button>

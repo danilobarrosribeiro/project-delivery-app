@@ -9,7 +9,7 @@ import CheckoutTable from '../components/CheckoutTable';
 export default function Checkout() {
   const navigate = useNavigate();
 
-  const { getToLocal } = useContext(Context);
+  const { getToLocal, saveToLocal } = useContext(Context);
   const [data, setData] = useState({
     sellerId: '',
     deliveryAddress: '',
@@ -23,6 +23,7 @@ export default function Checkout() {
     try {
       const list = await requestGet('/sellers');
       setSellers(list);
+      saveToLocal('sellers', list);
       setData({ ...data, sellerId: list[0]?.id });
       return list;
     } catch (err) {
