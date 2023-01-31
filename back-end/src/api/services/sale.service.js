@@ -1,12 +1,39 @@
-const { Sale, SaleProduct } = require('../../database/models');
+const { Sale, SaleProduct, Product } = require('../../database/models');
+
+  const mountSaleProducts = (products, productsOrder) => {
+    console.log(products);
+    const productsWithQuantity = products.map((product) => {
+      let productWithQuantity = product;
+      productsOrder.forEach((element) => {
+        if (element.productId === product.id) {
+          productWithQuantity = { ...product, quantity: element.quantity };
+        }
+      });
+      return productWithQuantity;
+    });
+    return productsWithQuantity;
+  };
 
   const getById = async (id) => {
-    const order = await Sale.findOne({ where: { id } });
+    const order = await Sale.findOne({ where: { id }, raw: true, nest: true });
     if (!order) {
       return { type: 404, message: { message: 'Pedido não cadastrado' } };
     }
 
-    return { type: 200, message: order };
+    const productsOrder = await SaleProduct.findAll({ where: { saleId: id } });
+    const productsIdArray = productsOrder.map((productOrder) => productOrder.productId);
+
+    const products = await Product.findAll({
+        where: { id: productsIdArray }, nest: true, raw: true });
+
+      const mountArray = mountSaleProducts(products, productsOrder);
+
+      const result = {
+        ...order,
+        products: mountArray,
+      };
+  
+    return { type: 200, message: result };
   };
 
   const createProductSale = async (id, products) => {
