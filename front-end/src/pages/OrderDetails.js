@@ -16,18 +16,15 @@ export default function Orders() {
     setSale(saleById);
   };
 
-  const getNameSeller = (sellerId) => {
-    const sellers = getToLocal('sellers');
-    if (sellers) return sellers.find((seller) => Number(seller.id) === Number(sellerId));
-  };
-
   const updateStatus = async ({ target: { name } }) => {
     try {
       let newStatus = 'Em Trânsito';
       if (name === 'preparing') {
         newStatus = 'Preparando';
       }
-      console.log(newStatus);
+      if (name === 'delivered') {
+        newStatus = 'Entregue';
+      }
       await requestPut(`${role}/orders/${id}`, { status: newStatus });
       setSale(await requestGet(`/${role}/orders/${id}`));
     } catch (error) {
@@ -60,7 +57,7 @@ export default function Orders() {
               data-testid={ `customer_order_details__
               element-order-details-label-seller-name` }
             >
-              { `P.Vend: ${getNameSeller(sale.sellerId)?.name}` }
+              { `P.Vend: ${sale.sellerName ? sale.sellerName : ''}` }
             </p>
           ) : null }
           <p
@@ -82,6 +79,8 @@ export default function Orders() {
               type="button"
               data-testid="customer_order_details__button-delivery-check"
               disabled={ sale.status !== 'Em Trânsito' }
+              name="delivered"
+              onClick={ (event) => updateStatus(event) }
             >
               MARCAR COMO ENTREGUE
             </button>

@@ -1,4 +1,4 @@
-const { Sale, SaleProduct, Product } = require('../../database/models');
+const { Sale, SaleProduct, Product, User } = require('../../database/models');
 
   const mountSaleProducts = (products, productsOrder) => {
     console.log(products);
@@ -22,6 +22,7 @@ const { Sale, SaleProduct, Product } = require('../../database/models');
 
     const productsOrder = await SaleProduct.findAll({ where: { saleId: id } });
     const productsIdArray = productsOrder.map((productOrder) => productOrder.productId);
+    const seller = await User.findByPk(order.sellerId);
 
     const products = await Product.findAll({
         where: { id: productsIdArray }, nest: true, raw: true });
@@ -31,6 +32,7 @@ const { Sale, SaleProduct, Product } = require('../../database/models');
       const result = {
         ...order,
         products: mountArray,
+        sellerName: seller.name,
       };
   
     return { type: 200, message: result };

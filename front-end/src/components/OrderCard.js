@@ -6,7 +6,7 @@ import { requestGet } from '../services/requests';
 
 export default function OrderCard({ order }) {
   const { formatDate, saveToLocal, getToLocal } = useContext(Context);
-  const [testId, setTestId] = useState('checkout');
+  const [testId, setTestId] = useState('customer');
   const { id, status, saleDate, totalPrice } = order;
   const { pathname } = useLocation();
   const navigate = useNavigate();
