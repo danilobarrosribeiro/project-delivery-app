@@ -1,11 +1,11 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const models = require('../../database/models');
-const jwtUtils = require('../../api/utils/jwt.utils');
+const models = require('../../../database/models');
+const jwtUtils = require('../../../api/utils/jwt.utils');
 const sinon = require('sinon');
 const md5 = require('md5');
 
-const app = require('../../../src/api/app');
+const app = require('../../../api/app');
 
 chai.use(chaiHttp);
 
