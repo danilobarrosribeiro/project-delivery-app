@@ -2,7 +2,6 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../../../api/app');
 const models = require('../../../database/models');
-const jwtUtils = require('../../../api/utils/jwt.utils');
 const sinon = require('sinon');
 const md5 = require('md5');
 
@@ -48,5 +47,11 @@ describe('Integration tests products routes', () => {
     const response = await chai.request(app).get('/customer/products').set('authorization', loginResponse.body.token).send();
     expect(response.status).to.be.deep.equal(200);
     expect(response.body).to.be.deep.equal(databaseListProducts);
+  });
+
+  it('should return 403 if trying to access without token', async () => {
+    const response = await chai.request(app).get('/customer/products').send();
+    expect(response.status).to.be.equal(403);
+    expect(response.body.message).to.be.equal('You must provide a valid token')
   });
 });
