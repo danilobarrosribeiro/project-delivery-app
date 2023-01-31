@@ -1,33 +1,29 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import Headers from '../components/Header';
 import Context from '../context/Context';
 import CheckoutTable from '../components/CheckoutTable';
+import { requestGet, setToken } from '../services/requests';
 
 export default function Orders() {
-  const { saveToLocal } = useContext(Context);
-  const [role, setRole] = useState('');
+  const { getToLocal, formatDate } = useContext(Context);
+  const testId = 'customer_order_details__element-order-details-label-delivery-status';
+  const [role, setRole] = useState('customer');
   const [sale, setSale] = useState({});
-  // .toLocaleDateString('pt-br')
+  const { id } = useParams();
+
+  const getSaleById = async ({ token }) => {
+    setToken(token);
+    console.log(token);
+    const saleById = await requestGet(`/customer/orders/${id}`);
+    setSale(saleById);
+    // saveToLocal('cartDrinks', saleById.products);
+  };
 
   useEffect(() => {
-    const localUser = JSON.parse(localStorage.getItem('user'));
-    saveToLocal('cartDrinks', sale.products);
+    const localUser = getToLocal('user');
     setRole(localUser.role);
-    setSale({
-      id: 3,
-      sellerName: 'Fulana',
-      sellerId: 3,
-      deliveryNumber: 3,
-      totalPrice: '28,50',
-      status: 'pendente',
-      saleDate: '2023-01-30T18:42:21.165Z',
-      products: [{
-        id: 1,
-        name: 'Não beba',
-        quantity: 2,
-        price: '3,50',
-      }],
-    });
+    getSaleById(localUser);
   }, []);
 
   return (
@@ -39,15 +35,28 @@ export default function Orders() {
           <p data-testid="customer_order_details__element-order-details-label-order-id">
             { `PEDIDO ${sale.deliveryNumber}` }
           </p>
-          <p>{ `P.Vend: ${sale.sellerName}` }</p>
           <p
             data-testid="customer_order_details__element-order-details-label-seller-name"
           >
-            { sale.saleDate }
+            { `P.Vend: ${sale.sellerName}` }
           </p>
-          <p>{ sale.status }</p>
+          <p
+            data-testid={
+              `${role}_order_details__element-order-details-label-order-date`
+            }
+          >
+            { formatDate(sale.saleDate) }
+          </p>
+          <p
+            data-testid={ testId }
+          >
+            { sale.status }
+          </p>
           { role === 'customer' ? (
-            <button type="button">
+            <button
+              type="button"
+              data-testeid="customer_order_details__button-delivery-check"
+            >
               MARCAR COMO ENTREGUE
             </button>
           ) : (
