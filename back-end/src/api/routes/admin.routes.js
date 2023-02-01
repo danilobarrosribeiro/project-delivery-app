@@ -8,4 +8,8 @@ router.post('/register',
 authMiddleware,
 adminController.createSellerLogin);
 
+router.get('/users',
+authMiddleware,
+adminController.getAllUsers);
+
 module.exports = router;

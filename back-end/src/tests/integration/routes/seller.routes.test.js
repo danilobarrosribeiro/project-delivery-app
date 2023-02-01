@@ -9,223 +9,165 @@ chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('Integration tests POST /customer/orders routes', () => {
-  it('Should create a new order', async () => {
-    const userLogin = {
-      email: 'user@user.com',
-      password: 'userPassword',
-    };
-    const userDatabaseResponse = {
-      dataValues: {
-        email: 'user@user.com',
-        password: md5('userPassword'),
-        id: 2,
-        role: 'customer',
-        name: 'name'
-      }
-    }
-
-    const mockModelCreate = {
-      userId: 2,
-      sellerId: 3,
-      totalPrice: 40.35,
-      deliveryAddress: 'x address',
-      deliveryNumber: '1910',
-      saleDate: new Date().toDateString(),
-      status: 'Pendente',
-    }
-    sinon.stub(models.User, 'findOne').resolves(userDatabaseResponse);
-    const loginResponse = await chai.request(app).post('/login').send(userLogin);
-    sinon.restore();
-    sinon.stub(models.Sale, 'create').resolves(mockModelCreate);
-    sinon.stub(models.SaleProduct, 'create').resolves(null);
-    const response = await chai.request(app).post('/customer/orders').set('authorization', loginResponse.body.token).send({
-      sellerId: 3,
-      totalPrice: 40.35,
-      deliveryAddress: 'x address',
-      deliveryNumber: '1910',
-      products: [1, 2] });
-    expect(response.status).to.be.equal(201);
-    expect(response.body).to.be.deep.equal(mockModelCreate)
-  });
-
-  it('Should not create and throw 409 if models.Sale.create does not return', async () => {
-    const userLogin = {
-      email: 'user@user.com',
-      password: 'userPassword',
-    };
-    const userDatabaseResponse = {
-      dataValues: {
-        email: 'user@user.com',
-        password: md5('userPassword'),
-        id: 2,
-        role: 'customer',
-        name: 'name'
-      }
-    }
-
-    sinon.stub(models.User, 'findOne').resolves(userDatabaseResponse);
-    const loginResponse = await chai.request(app).post('/login').send(userLogin);
-    sinon.restore();
-    sinon.stub(models.Sale, 'create').resolves(null);
-
-    const response = await chai.request(app).post('/customer/orders').set('authorization', loginResponse.body.token).send({
-      sellerId: 3,
-      totalPrice: 40.35,
-      deliveryAddress: 'x address',
-      deliveryNumber: '1910',
-      products: [1, 2] });
-
-    expect(response.status).to.be.equal(409);
-    expect(response.body.message).to.be.equal('Não foi possivel cadastrar o pedido')
-  });
-
-  it('Should not create a new sale withot token', async () => {
-    const mockModelCreate = {
-      userId: 2,
-      sellerId: 3,
-      totalPrice: 40.35,
-      deliveryAddress: 'x address',
-      deliveryNumber: '1910',
-      saleDate: new Date().toDateString(),
-      status: 'Pendente',
-    }
-
-    sinon.stub(models.Sale, 'create').resolves(mockModelCreate);
-    sinon.stub(models.SaleProduct, 'create').resolves(null);
-    const response = await chai.request(app).post('/customer/orders').send({
-      sellerId: 3,
-      totalPrice: 40.35,
-      deliveryAddress: 'x address',
-      deliveryNumber: '1910',
-      products: [1, 2] });
-    expect(response.status).to.be.equal(403);
-    expect(response.body.message).to.be.equal('You must provide a valid token')
-  });
-  afterEach(() => {
-    sinon.restore();
-  });
-});
-
-describe('Integration tests GET /customer/orders routes', () => {
-  it('Should return status 200 and order list', async () => {
-    const userLogin = {
-      email: 'user@user.com',
-      password: 'userPassword',
-    };
-    const userDatabaseResponse = {
-      dataValues: {
-        email: 'user@user.com',
-        password: md5('userPassword'),
-        id: 2,
-        role: 'customer',
-        name: 'name'
-      }
-    };
-
-    const mockModelFindAll = [
-      {
-        "id": 1,
-        "userId": 3,
-        "sellerId": 2,
-        "totalPrice": "9",
-        "deliveryAddress": "Rua x",
-        "deliveryNumber": "10",
-        "saleDate": "2023-01-31T17:14:26.000Z",
-        "status": "a",
-        "user_id": 3,
-        "seller_id": 2
-      },
-      {
-        "id": 2,
-        "userId": 3,
-        "sellerId": 2,
-        "totalPrice": "8",
-        "deliveryAddress": "Rua x",
-        "deliveryNumber": "10",
-        "saleDate": "2023-01-31T17:14:26.000Z",
-        "status": "a",
-        "user_id": 3,
-        "seller_id": 2
-      },
-      {
-        "id": 3,
-        "userId": 3,
-        "sellerId": 2,
-        "totalPrice": "17",
-        "deliveryAddress": "Rua x",
-        "deliveryNumber": "10",
-        "saleDate": "2023-01-31T17:14:26.000Z",
-        "status": "a",
-        "user_id": 3,
-        "seller_id": 2
-      },
-      {
-        "id": 4,
-        "userId": 3,
-        "sellerId": 2,
-        "totalPrice": "18",
-        "deliveryAddress": "Rua x",
-        "deliveryNumber": "10",
-        "saleDate": "2023-01-31T17:14:26.000Z",
-        "status": "a",
-        "user_id": 3,
-        "seller_id": 2
-      }
-    ];
-
-    sinon.stub(models.User, 'findOne').resolves(userDatabaseResponse);
-    const loginResponse = await chai.request(app).post('/login').send(userLogin);
-    sinon.restore();
-
-    sinon.stub(models.Sale, 'findAll').resolves(mockModelFindAll);
-    const response =  await chai.request(app).get('/customer/orders').set('authorization', loginResponse.body.token).send();
-
-    expect(response.status).to.be.equal(200);
-    expect(response.body).to.be.deep.equal(mockModelFindAll);
-
-  });
-
-  it('Should return 404 if there are not products in the db', async () => {
-    const userLogin = {
-      email: 'user@user.com',
-      password: 'userPassword',
-    };
-    const userDatabaseResponse = {
-      dataValues: {
-        email: 'user@user.com',
-        password: md5('userPassword'),
-        id: 2,
-        role: 'customer',
-        name: 'name'
-      }
-    };
-
-    const mockModelFindAll = null;
-
-    sinon.stub(models.User, 'findOne').resolves(userDatabaseResponse);
-    const loginResponse = await chai.request(app).post('/login').send(userLogin);
-    sinon.restore();
-
-    sinon.stub(models.Sale, 'findAll').resolves(mockModelFindAll);
-    const response =  await chai.request(app).get('/customer/orders').set('authorization', loginResponse.body.token).send();
-
-    expect(response.status).to.be.equal(404);
-    expect(response.body.message).to.be.equal('Pedidos não cadastrado');
-  });
-
-  it('Should not authorize user without token', async () => {
-    const response =  await chai.request(app).get('/customer/orders').set('authorization', 'any token').send();
+describe('GET /sellers route integration tests', () => {
+  it('Should not respond to a request without token', async () => {
+    const response =  await chai.request(app).get('/sellers').set('authorization', 'any token').send();
 
     expect(response.status).to.be.equal(403);
     expect(response.body.message).to.be.equal('You must provide a valid token');
   });
+
+  it('Should return status 200 and seller', async () => {
+    const userLogin = {
+      email: 'user@user.com',
+      password: 'userPassword',
+    };
+    const userDatabaseResponse = {
+      dataValues: {
+        email: 'user@user.com',
+        password: md5('userPassword'),
+        id: 2,
+        role: 'customer',
+        name: 'name'
+      }
+    };
+
+    sinon.stub(models.User, 'findOne').resolves(userDatabaseResponse);
+    const loginResponse = await chai.request(app).post('/login').send(userLogin);
+
+    const mockUserFindAll = [
+      {
+        id: 1,
+        name: 'sellerName',
+        role: 'seller',
+        email: 'seller@seller.com'
+      }
+    ];
+
+    sinon.stub(models.User, 'findAll').resolves(mockUserFindAll);
+
+    const response =  await chai.request(app).get('/sellers').set('authorization', loginResponse.body.token).send();
+
+    expect(response.status).to.be.equal(200);
+    expect(response.body).to.be.deep.equal(mockUserFindAll);
+  });
+
+  it('Should return 404 if there are no sellers on db', async () => {
+    const userLogin = {
+      email: 'user@user.com',
+      password: 'userPassword',
+    };
+    const userDatabaseResponse = {
+      dataValues: {
+        email: 'user@user.com',
+        password: md5('userPassword'),
+        id: 2,
+        role: 'customer',
+        name: 'name'
+      }
+    };
+
+    sinon.stub(models.User, 'findOne').resolves(userDatabaseResponse);
+    const loginResponse = await chai.request(app).post('/login').send(userLogin);
+
+    sinon.stub(models.User, 'findAll').resolves(null);
+
+    const response =  await chai.request(app).get('/sellers').set('authorization', loginResponse.body.token).send();
+
+    expect(response.status).to.be.equal(404);
+    expect(response.body.message).to.be.equal('Pedido não cadastrado');
+  })
   afterEach(() => {
     sinon.restore();
   });
 });
 
-describe('Integration tests GET /customer/orders/:id route', () => {
+describe('GET /sellers/orders route integration tests', () => {
+  it('Should not respond to a request without token', async () => {
+    const response =  await chai.request(app).get('/sellers/orders').set('authorization', 'any token').send();
+
+    expect(response.status).to.be.equal(403);
+    expect(response.body.message).to.be.equal('You must provide a valid token');
+  });
+
+  it('Should return status 200 and sellers list', async () => {
+    const userLogin = {
+      email: 'user@user.com',
+      password: 'userPassword',
+    };
+    const userDatabaseResponse = {
+      dataValues: {
+        email: 'user@user.com',
+        password: md5('userPassword'),
+        id: 2,
+        role: 'customer',
+        name: 'name'
+      }
+    };
+
+    sinon.stub(models.User, 'findOne').resolves(userDatabaseResponse);
+    const loginResponse = await chai.request(app).post('/login').send(userLogin);
+
+    const mockSaleFindAll = [
+      {
+      userId: 2,
+      sellerId: 3,
+      totalPrice: 40.35,
+      deliveryAddress: 'x address',
+      deliveryNumber: '1910',
+      saleDate: new Date().toDateString(),
+      status: 'Pendente',
+      },
+      {
+      userId: 2,
+      sellerId: 3,
+      totalPrice: 40.35,
+      deliveryAddress: 'x address',
+      deliveryNumber: '1910',
+      saleDate: new Date().toDateString(),
+      status: 'Pendente',
+      },
+    ];
+
+    sinon.stub(models.Sale, 'findAll').resolves(mockSaleFindAll);
+
+    const response =  await chai.request(app).get('/sellers/orders').set('authorization', loginResponse.body.token).send();
+
+    expect(response.status).to.be.equal(200);
+    expect(response.body).to.be.deep.equal(mockSaleFindAll);
+  });
+
+  it('Should return 404 if there are no sellers on db', async () => {
+    const userLogin = {
+      email: 'user@user.com',
+      password: 'userPassword',
+    };
+    const userDatabaseResponse = {
+      dataValues: {
+        email: 'user@user.com',
+        password: md5('userPassword'),
+        id: 2,
+        role: 'customer',
+        name: 'name'
+      }
+    };
+
+    sinon.stub(models.User, 'findOne').resolves(userDatabaseResponse);
+    const loginResponse = await chai.request(app).post('/login').send(userLogin);
+
+    sinon.stub(models.Sale, 'findAll').resolves(null);
+
+    const response =  await chai.request(app).get('/sellers/orders').set('authorization', loginResponse.body.token).send();
+
+    expect(response.status).to.be.equal(404);
+    expect(response.body.message).to.be.equal('Pedido não cadastrado');
+  })
+  afterEach(() => {
+    sinon.restore();
+  });
+});
+
+describe('GET /sellers/:id route integration tests', () => {
   it('Should return status 200 and the order details', async () => {
     const userLogin = {
       email: 'user@user.com',
@@ -294,7 +236,7 @@ describe('Integration tests GET /customer/orders/:id route', () => {
     sinon.stub(models.SaleProduct, 'findAll').resolves(mockSaleProductFindAll);
     sinon.stub(models.Product, 'findAll').resolves(mockProductFindAll);
 
-    const response =  await chai.request(app).get('/customer/orders/3').set('authorization', loginResponse.body.token).send();
+    const response =  await chai.request(app).get('/sellers/3').set('authorization', loginResponse.body.token).send();
 
     const mockResponse = {
       ...mockSaleFindOne,
@@ -339,25 +281,24 @@ describe('Integration tests GET /customer/orders/:id route', () => {
     const loginResponse = await chai.request(app).post('/login').send(userLogin);
     sinon.stub(models.Sale, 'findOne').resolves(null);
 
-    const response =  await chai.request(app).get('/customer/orders/3').set('authorization', loginResponse.body.token).send();
+    const response =  await chai.request(app).get('/sellers/3').set('authorization', loginResponse.body.token).send();
 
     expect(response.status).to.be.equal(404);
     expect(response.body.message).to.be.equal('Pedido não cadastrado');
   });
 
   it('Should not respond to a request without token', async () => {
-    const response =  await chai.request(app).get('/customer/orders/3').set('authorization', 'any token').send();
+    const response =  await chai.request(app).get('/sellers/3').set('authorization', 'any token').send();
 
     expect(response.status).to.be.equal(403);
     expect(response.body.message).to.be.equal('You must provide a valid token');
   });
-
   afterEach(() => {
     sinon.restore();
   });
 });
 
-describe('PUT /customer/orders/:id integration testes', () => {
+describe('PUT /sellers route integration tests', () => {
   it('Should return updated order with status 200 if customer tries to update to \'Entregue\'', async () => {
     const userLogin = {
       email: 'customer@customer.com',
@@ -394,7 +335,7 @@ describe('PUT /customer/orders/:id integration testes', () => {
     sinon.stub(models.Sale, 'update').resolves(expectedResponse);
 
 
-    const response =  await chai.request(app).put('/customer/orders/1').set('authorization', loginResponse.body.token).send(req);
+    const response =  await chai.request(app).put('/sellers/1').set('authorization', loginResponse.body.token).send(req);
 
 
     expect(response.status).to.be.equal(200);
@@ -438,7 +379,7 @@ describe('PUT /customer/orders/:id integration testes', () => {
     sinon.stub(models.Sale, 'update').resolves(expectedResponse);
 
 
-    const response =  await chai.request(app).put('/customer/orders/1').set('authorization', loginResponse.body.token).send(req);
+    const response =  await chai.request(app).put('/sellers/1').set('authorization', loginResponse.body.token).send(req);
 
 
     expect(response.status).to.be.equal(200);
@@ -482,7 +423,7 @@ describe('PUT /customer/orders/:id integration testes', () => {
     sinon.stub(models.Sale, 'update').resolves(expectedResponse);
 
 
-    const response =  await chai.request(app).put('/customer/orders/1').set('authorization', loginResponse.body.token).send(req);
+    const response =  await chai.request(app).put('/sellers/1').set('authorization', loginResponse.body.token).send(req);
 
 
     expect(response.status).to.be.equal(200);
@@ -526,7 +467,7 @@ describe('PUT /customer/orders/:id integration testes', () => {
     sinon.stub(models.Sale, 'update').resolves(expectedResponse);
 
 
-    const response =  await chai.request(app).put('/customer/orders/1').set('authorization', loginResponse.body.token).send(req);
+    const response =  await chai.request(app).put('/sellers/1').set('authorization', loginResponse.body.token).send(req);
 
 
     expect(response.status).to.be.equal(403);
@@ -535,7 +476,7 @@ describe('PUT /customer/orders/:id integration testes', () => {
   });
 
   it('Should not respond to a request without token', async () => {
-    const response =  await chai.request(app).put('/customer/orders/1').set('authorization', 'any token').send();
+    const response =  await chai.request(app).put('/sellers/1').set('authorization', 'any token').send();
 
     expect(response.status).to.be.equal(403);
     expect(response.body.message).to.be.equal('You must provide a valid token');
