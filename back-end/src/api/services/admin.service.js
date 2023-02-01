@@ -12,7 +12,12 @@ const getAllUsers = async () => {
   if (!users) {
     return { type: 404, message: { message: 'No users found' } };
   }
-  return { type: 200, message: users };
+  const newUser = users.map((user) => {
+    const { dataValues } = user;
+    const { password: _, ...userWithoutPass } = dataValues;
+    return userWithoutPass;
+  });
+  return { type: 200, message: newUser };
 };
 
 module.exports = { getAllUsers };
