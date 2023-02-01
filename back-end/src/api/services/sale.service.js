@@ -1,6 +1,6 @@
 const models = require('../../database/models');
 
-const { Sale, SaleProduct, Product } = models;
+const { Sale, SaleProduct, Product, User } = models;
 
   const mountSaleProducts = (products, productsOrder) => {
     console.log(products);
@@ -24,6 +24,7 @@ const { Sale, SaleProduct, Product } = models;
 
     const productsOrder = await SaleProduct.findAll({ where: { saleId: id } });
     const productsIdArray = productsOrder.map((productOrder) => productOrder.productId);
+    const seller = await User.findByPk(order.sellerId);
 
     const products = await Product.findAll({
         where: { id: productsIdArray }, nest: true, raw: true });
@@ -35,6 +36,7 @@ const { Sale, SaleProduct, Product } = models;
       const result = {
         ...order,
         products: mountArray,
+        sellerName: seller.name,
       };
   
     return { type: 200, message: result };
@@ -95,12 +97,16 @@ const { Sale, SaleProduct, Product } = models;
     const sale = await Sale.findByPk(saleId);
 
     if (status === 'Entregue' && userId === sale.userId) {
-      const result = await Sale.update({ status }, { where: { id: saleId } });
-
+      const result = await Sale.update({ status }, { where: { id: saleId }, 
+        returning: true,
+        plain: true });
+      console.log(result);
       return { type: 200, message: result };
     } if (sellerStatus.includes(status) && userId === sale.sellerId) {
-      const result = await Sale.update({ status }, { where: { id: saleId } });
-
+      const result = await Sale.update({ status }, { where: { id: saleId }, 
+        returning: true,
+        plain: true });
+      console.log(result);
       return { type: 200, message: result };
     }
 

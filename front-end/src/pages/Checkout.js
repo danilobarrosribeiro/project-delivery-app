@@ -21,7 +21,7 @@ export default function Checkout() {
 
   const getSellers = async () => {
     try {
-      const list = await requestGet('/sellers');
+      const list = await requestGet('/seller');
       setSellers(list);
       setData({ ...data, sellerId: list[0]?.id });
       return list;
