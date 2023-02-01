@@ -1,12 +1,73 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Headers from '../components/Header';
 import RegistrationTable from '../components/RegistrationTable';
+import { requestGet, requestPost, setToken } from '../services/requests';
+import Context from '../context/Context';
 
 export default function Registration() {
+  const { getToLocal } = useContext(Context);
+  const [error, setError] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [data, setData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'seller',
+  });
+
+  const handleChange = ({ target: { value, name } }) => {
+    setError(true);
+    if (name === 'role' && value === 'Vendedor') {
+      setData({ ...data, [name]: 'seller' });
+      console.log('entrou 1');
+    } else if (name === 'role' && value === 'Cliente') {
+      setData({ ...data, [name]: 'customer' });
+      console.log('cliente');
+    } else {
+      console.log('entrou 2');
+      setData({ ...data, [name]: value });
+    }
+  };
+  const getAllUsers = async () => {
+    const allUsers = await requestGet('/');
+    setUsers(allUsers);
+  };
+
+  const isDisabled = () => {
+    const { name, email, password } = data;
+    const six = 6;
+    const twelve = 12;
+    const regex = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;
+    return !(password.length >= six && regex.test(email) && name.length >= twelve);
+  };
+
+  const registerUser = async (event) => {
+    event.preventDefault();
+
+    try {
+      const post = await requestPost('/admin/register', data);
+      console.log(post);
+
+      // navigate(`/${}`);
+    } catch (err) {
+      setError(false);
+    }
+  };
+
+  useEffect(() => {
+    const { token } = getToLocal('user');
+    setToken(token);
+  });
+
   return (
     <main>
       <Headers />
-
+      <p
+        data-testid="admin_manage__element-invalid-register"
+        hidden={ error }
+      >
+        Usuário já cadastrado
+      </p>
       <h1>
         Cadastrar novo usuário
       </h1>
@@ -18,6 +79,8 @@ export default function Registration() {
             type="text"
             name="name"
             placeholder="Nome e Sobrenome"
+            onChange={ handleChange }
+            value={ data.name }
           />
         </label>
         <label htmlFor="email">
@@ -27,6 +90,8 @@ export default function Registration() {
             type="email"
             name="email"
             placeholder="seuemail@fastrefresh.com"
+            onChange={ handleChange }
+            value={ data.email }
           />
         </label>
         <label htmlFor="password">
@@ -36,13 +101,17 @@ export default function Registration() {
             data-testid="admin_manage__input-password"
             name="password"
             placeholder="*********"
+            onChange={ handleChange }
+            value={ data.password }
           />
         </label>
-        <label htmlFor="type">
+        <label htmlFor="role">
           Tipo
           <select
             data-testid="admin_manage__select-role"
-            name="type"
+            name="role"
+            onChange={ handleChange }
+            value={ data.role }
           >
             <option
               name="seller"
@@ -59,6 +128,8 @@ export default function Registration() {
         <button
           type="button"
           data-testid="admin_manage__button-register"
+          disabled={ isDisabled() }
+          onClick={ (event) => registerUser(event) }
         >
           Cadastrar
         </button>

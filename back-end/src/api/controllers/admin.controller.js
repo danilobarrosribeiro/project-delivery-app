@@ -6,7 +6,7 @@ const createSellerLogin = async (req, res) => {
     return res.status(403).json({ message: 'You are not an admin' });
   }
   delete req.body.payload;
-  const { type, message } = await loginService.createUser(req.body, 'seller');
+  const { type, message } = await loginService.createUser(req.body, req.body.role);
   res.status(type).json(message);
 };
 

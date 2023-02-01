@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-export default function RegistrationTable() {
+export default function RegistrationTable({ users }) {
   const teste = [
     { id: 1,
       name: 'Fulana Pereira',
@@ -8,6 +8,7 @@ export default function RegistrationTable() {
       type: 'P. Vendedora' },
     { id: 2, name: 'Zé Birita', email: 'zebirita@email.com', type: 'Cliente' },
   ];
+
   return (
     <table className="table-checkout">
       <thead className="line-checkout">
