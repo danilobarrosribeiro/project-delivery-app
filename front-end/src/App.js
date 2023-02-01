@@ -8,6 +8,7 @@ import Products from './pages/Products';
 import Checkout from './pages/Checkout';
 import OrderDetails from './pages/OrderDetails';
 import Orders from './pages/Orders';
+import Registration from './pages/Registration';
 
 // import rockGlass from './images/rockGlass.svg';
 // <div className="App">
@@ -31,6 +32,7 @@ function App() {
           <Route exact path="/seller/orders/:id" element={ <OrderDetails /> } />
           <Route exact path="/customer/orders" element={ <Orders /> } />
           <Route exact path="/seller/orders" element={ <Orders /> } />
+          <Route exact path="/admin/manage" element={ <Registration /> } />
         </Routes>
       </Provider>
     </BrowserRouter>

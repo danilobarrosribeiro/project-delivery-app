@@ -4,7 +4,7 @@ import Headers from '../components/Header';
 import DrinkCard from '../components/DrinkCard';
 import { requestGet, setToken } from '../services/requests';
 import Context from '../context/Context';
-// import '../css/products.css';
+import '../css/products.css';
 
 function Products() {
   const [drinks, setDrinks] = useState([]);
