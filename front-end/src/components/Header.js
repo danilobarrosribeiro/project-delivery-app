@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import '../css/header.css';
-// import logo from '../css/images/logo.jpg';
+import logo from '../css/images/logo.jpg';
 
 export default function Headers() {
   const [user, setUser] = useState('');
@@ -75,11 +75,11 @@ export default function Headers() {
           : null
       }
 
-      {/* <img
+      <img
         className="img-logo-header"
         src={ logo }
         alt="Logo FastRefresh"
-      /> */}
+      />
       <div className="nav-header">
         <p
           className="name-header"

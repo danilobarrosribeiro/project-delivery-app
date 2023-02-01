@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export default function RegistrationTable({ users }) {
-  const teste = [
-    { id: 1,
-      name: 'Fulana Pereira',
-      email: 'fulana@deliveryapp.com',
-      type: 'P. Vendedora' },
-    { id: 2, name: 'Zé Birita', email: 'zebirita@email.com', type: 'Cliente' },
-  ];
+  // const teste = [
+  //   { id: 1,
+  //     name: 'Fulana Pereira',
+  //     email: 'fulana@deliveryapp.com',
+  //     type: 'P. Vendedora' },
+  //   { id: 2, name: 'Zé Birita', email: 'zebirita@email.com', type: 'Cliente' },
+  // ];
 
   return (
     <table className="table-checkout">
@@ -22,7 +23,7 @@ export default function RegistrationTable({ users }) {
       </thead>
       <tbody>
         {
-          teste.map(({ id, name, email, type }, index) => (
+          users.map(({ id, name, email, role }, index) => (
 
             <tr key={ id }>
               <td
@@ -36,7 +37,7 @@ export default function RegistrationTable({ users }) {
               </td>
               <td
                 className="line-checkout"
-                data-testid="admin_manage__input-email"
+                data-testid={ `admin_manage__element-user-table-name-${index}` }
               >
                 { name }
 
@@ -60,7 +61,7 @@ export default function RegistrationTable({ users }) {
                   `admin_manage__element-user-table-role-${index}`
                 }
               >
-                {type}
+                {role}
 
               </td>
               <td className="line-checkout">
@@ -80,3 +81,9 @@ export default function RegistrationTable({ users }) {
     </table>
   );
 }
+
+RegistrationTable.propTypes = {
+  users: PropTypes.shape({
+    map: PropTypes.func,
+  }).isRequired,
+};

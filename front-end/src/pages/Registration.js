@@ -19,17 +19,14 @@ export default function Registration() {
     setError(true);
     if (name === 'role' && value === 'Vendedor') {
       setData({ ...data, [name]: 'seller' });
-      console.log('entrou 1');
     } else if (name === 'role' && value === 'Cliente') {
       setData({ ...data, [name]: 'customer' });
-      console.log('cliente');
     } else {
-      console.log('entrou 2');
       setData({ ...data, [name]: value });
     }
   };
   const getAllUsers = async () => {
-    const allUsers = await requestGet('/');
+    const allUsers = await requestGet('/admin/users');
     setUsers(allUsers);
   };
 
@@ -55,6 +52,7 @@ export default function Registration() {
   };
 
   useEffect(() => {
+    getAllUsers();
     const { token } = getToLocal('user');
     setToken(token);
   });
@@ -115,11 +113,13 @@ export default function Registration() {
           >
             <option
               name="seller"
+              value="seller"
             >
               Vendedor
             </option>
             <option
               name="customer"
+              value="customer"
             >
               Cliente
             </option>
@@ -136,7 +136,7 @@ export default function Registration() {
       </form>
       <section>
         <h1>Lista de usuários</h1>
-        <RegistrationTable />
+        <RegistrationTable users={ users } />
       </section>
 
     </main>
