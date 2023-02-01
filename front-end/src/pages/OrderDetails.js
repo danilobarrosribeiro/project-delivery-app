@@ -52,14 +52,13 @@ export default function Orders() {
           >
             { `PEDIDO ${sale.id}` }
           </p>
-          { role === 'customer' ? (
-            <p
-              data-testid={ `customer_order_details__
-              element-order-details-label-seller-name` }
-            >
-              { `P.Vend: ${sale.sellerName ? sale.sellerName : ''}` }
-            </p>
-          ) : null }
+
+          <p
+            data-testid="customer_order_details__element-order-details-label-seller-name"
+          >
+            { `P.Vend: ${sale.sellerName ? sale.sellerName : ''}` }
+          </p>
+
           <p
             data-testid={
               `${role}_order_details__element-order-details-label-order-date`
