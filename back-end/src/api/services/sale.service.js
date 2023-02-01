@@ -28,6 +28,8 @@ const { Sale, SaleProduct, Product } = models;
     const products = await Product.findAll({
         where: { id: productsIdArray }, nest: true, raw: true });
 
+        console.log('products', products, 'products');
+
       const mountArray = mountSaleProducts(products, productsOrder);
 
       const result = {
