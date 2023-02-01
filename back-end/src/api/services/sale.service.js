@@ -3,7 +3,6 @@ const models = require('../../database/models');
 const { Sale, SaleProduct, Product, User } = models;
 
   const mountSaleProducts = (products, productsOrder) => {
-    console.log(products);
     const productsWithQuantity = products.map((product) => {
       let productWithQuantity = product;
       productsOrder.forEach((element) => {

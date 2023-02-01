@@ -32,7 +32,7 @@ function Login() {
         navigate('/seller/orders');
         break;
       case 'administrator':
-        navigate('/admin');
+        navigate('/admin/manage');
         break;
       default:
         navigate('/customer/products');
